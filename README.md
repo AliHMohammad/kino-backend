@@ -1,5 +1,8 @@
 # startcode-with-security
 
+[![Build and deploy JAR app to Azure Web App - kino-api](https://github.com/AliHMohammad/kino-backend/actions/workflows/production_kino-api.yml/badge.svg)](https://github.com/AliHMohammad/kino-backend/actions/workflows/production_kino-api.yml)
+
+
 [Supplementing Google Doc](https://docs.google.com/document/d/1k5T7rRSrGetjuMdYoErk4ToZTk22QyBpR-x17nmtRos/edit?usp=sharing)
 
 Clone (prefered) or fork the project
