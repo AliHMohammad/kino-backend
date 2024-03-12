@@ -27,7 +27,7 @@ public class Seat {
     private Integer rowNum;
 
     @ManyToOne
-    private SeatPricing seat_pricing;
+    private SeatPricing seatPricing;
 
     @ManyToOne
     private Auditorium auditorium;
