@@ -24,7 +24,6 @@ public class CinemaService {
     }
 
     public List<Cinema> readAllCinemas() {
-
         return cinemaRepository.findAll();
     }
 
