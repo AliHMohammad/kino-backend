@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Cinema {
 
     @Id
@@ -31,8 +30,14 @@ public class Cinema {
     @NotBlank(message = "city must not be blank")
     private String city;
 
-    private boolean isActive = true;
+    private Boolean isActive = true;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Cinema(String name, String city, Boolean isActive) {
+        this.name = name;
+        this.city = city;
+        this.isActive = isActive;
+    }
 }
