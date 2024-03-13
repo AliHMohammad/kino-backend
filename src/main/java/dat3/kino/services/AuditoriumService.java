@@ -6,6 +6,8 @@ import dat3.kino.entities.SeatPricing;
 import dat3.kino.repositories.AuditoriumRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuditoriumService {
     private final AuditoriumRepository auditoriumRepository;
@@ -30,6 +32,10 @@ public class AuditoriumService {
             }
         }
         return auditorium;
+    }
+
+    public List<Auditorium> readAllAuditoriums() {
+        return auditoriumRepository.findAll();
     }
 
 
