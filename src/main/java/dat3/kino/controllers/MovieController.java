@@ -1,6 +1,8 @@
 package dat3.kino.controllers;
 
-import dat3.kino.dto.response.TmdbMovieDetails;
+import dat3.kino.dto.response.MovieDetailsResponse;
+import dat3.kino.dto.response.MovieResponse;
+import dat3.kino.dto.response.TmdbMovieDetailsResponse;
 import dat3.kino.entities.Movie;
 import dat3.kino.services.MovieService;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,12 @@ public class MovieController {
     }
 
     @GetMapping("/movies")
-    public ResponseEntity<List<Movie>> getMovies() {
+    public ResponseEntity<List<MovieResponse>> getMovies() {
         return ResponseEntity.ok(movieService.readAllMovies());
     }
 
-    @GetMapping("/movies/fromTMDB/{id}")
-    public ResponseEntity<TmdbMovieDetails> getMovie(@PathVariable Integer id) {
+    @GetMapping("/movies/TMDB/{id}")
+    public ResponseEntity<MovieDetailsResponse> getTMDBMovie(@PathVariable Integer id) {
         return ResponseEntity.ok(movieService.findMovieFromTMDB(id));
     }
 
