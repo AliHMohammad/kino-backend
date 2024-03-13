@@ -31,4 +31,22 @@ public class GlobalExceptionHandler {
         // return the map of errors
         return errors;
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public Map<String, String> handleEntityNotFoundExceptions(EntityNotFoundException exception) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", exception.getMessage());
+        return errors;
+    }
+
+    @ExceptionHandler(SeatPricingNotFoundExeption.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public Map<String, String> handleSeatPricingNotFoundExeptions(SeatPricingNotFoundExeption exception) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", exception.getMessage());
+        return errors;
+    }
 }

@@ -2,7 +2,6 @@ package dat3.kino.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Auditorium {
 
     @Id
@@ -29,4 +27,11 @@ public class Auditorium {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+
+
+    public Auditorium(String name, Cinema cinema) {
+        this.name = name;
+        this.cinema = cinema;
+    }
 }

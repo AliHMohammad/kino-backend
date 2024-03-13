@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "seat")
 public class Seat {
@@ -27,7 +26,7 @@ public class Seat {
     private Integer rowNum;
 
     @ManyToOne
-    private SeatPricing seat_pricing;
+    private SeatPricing seatPricing;
 
     @ManyToOne
     private Auditorium auditorium;
@@ -35,5 +34,12 @@ public class Seat {
     @JsonIgnore
     @ManyToMany(mappedBy = "seat")
     private Set<Reservation> reservation = new HashSet<>();
+
+    public Seat(Integer seatNum, Integer rowNum, SeatPricing seatPricing, Auditorium auditorium) {
+        this.seatNum = seatNum;
+        this.rowNum = rowNum;
+        this.seatPricing = seatPricing;
+        this.auditorium = auditorium;
+    }
 
 }
