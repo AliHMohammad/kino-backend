@@ -1,7 +1,8 @@
 package dat3.kino.controllers;
 
-import dat3.kino.entities.Cinema;
+import dat3.kino.dto.response.CinemaResponse;
 import dat3.kino.services.CinemaService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +18,12 @@ public class CinemaController {
     }
 
     @GetMapping("/cinemas")
-    public List<Cinema> getCinemas() {
-        return cinemaService.readAllCinemas();
+    public ResponseEntity<List<CinemaResponse>> getCinemas() {
+        return ResponseEntity.ok(cinemaService.readAllCinemas());
     }
 
     @GetMapping("/cinemas/{id}")
-    public Cinema getCinema(@PathVariable Long id) {
-        return cinemaService.readCinema(id);
+    public ResponseEntity<CinemaResponse> getCinema(@PathVariable Long id) {
+        return ResponseEntity.ok(cinemaService.readCinema(id));
     }
 }
