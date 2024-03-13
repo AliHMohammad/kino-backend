@@ -75,8 +75,8 @@ public class SecurityConfig {
             //.requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/test/admin-only")).hasAuthority("ADMIN")
 
             //Use this to completely disable security (Will not work if endpoints has been marked with @PreAuthorize)
-            //.requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll());
-            .anyRequest().authenticated());
+            .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll());
+//            .anyRequest().authenticated());
 
     return http.build();
   }
