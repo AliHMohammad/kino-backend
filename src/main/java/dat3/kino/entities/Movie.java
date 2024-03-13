@@ -1,23 +1,23 @@
 package dat3.kino.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Movie {
 
@@ -36,9 +36,17 @@ public class Movie {
     private int runtime;
 
     @NotNull(message = "premiere must not be null")
-    private Date premiere;
+    private LocalDate premiere;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Movie(Long id, String name, String poster, int runtime, LocalDate premiere) {
+        this.id = id;
+        this.name = name;
+        this.poster = poster;
+        this.runtime = runtime;
+        this.premiere = premiere;
+    }
 
 }
