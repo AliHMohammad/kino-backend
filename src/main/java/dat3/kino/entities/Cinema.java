@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class Cinema {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,6 +1,8 @@
 package dat3.kino.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +25,7 @@ public class Movie {
 
     //TMDB's id'er. Gemt som Long
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "name must not be blank")
@@ -40,5 +43,13 @@ public class Movie {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Movie(String name, String poster, int runtime, Date premiere, LocalDateTime createdAt) {
+        this.name = name;
+        this.poster = poster;
+        this.runtime = runtime;
+        this.premiere = premiere;
+        this.createdAt = createdAt;
+    }
 
 }
