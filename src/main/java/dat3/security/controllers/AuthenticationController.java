@@ -76,7 +76,7 @@ public class AuthenticationController {
       String token = encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
       List<String> roles = user.getRoles().stream().map(role -> role.getRoleName()).toList();
       return ResponseEntity.ok()
-              .body(new LoginResponse(user.getUsername(), token, roles));
+              .body(new LoginResponse(user.getUsername(), token, roles, user.getEmail()));
 
     } catch (BadCredentialsException | AuthenticationServiceException e) {
       // AuthenticationServiceException is thrown if the user is not found
