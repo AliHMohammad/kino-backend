@@ -4,7 +4,7 @@ import dat3.kino.dto.Genre;
 
 import java.util.List;
 
-public record TmdbMovieDetails(
+public record TmdbMovieDetailsResponse(
     List<Genre> genres,
     Integer id,
     String original_language,

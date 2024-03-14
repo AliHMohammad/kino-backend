@@ -1,8 +1,6 @@
 package dat3.kino.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +24,7 @@ public class Movie {
     private Long id;
 
     @NotBlank(message = "name must not be blank")
-    private String name;
+    private String title;
 
     @NotBlank(message = "poster must not be blank")
     private String poster;
@@ -41,9 +39,9 @@ public class Movie {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public Movie(Long id, String name, String poster, int runtime, LocalDate premiere) {
+    public Movie(Long id, String title, String poster, int runtime, LocalDate premiere) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.poster = poster;
         this.runtime = runtime;
         this.premiere = premiere;

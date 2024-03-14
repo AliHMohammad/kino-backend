@@ -49,4 +49,22 @@ public class GlobalExceptionHandler {
         errors.put("error", exception.getMessage());
         return errors;
     }
+
+    @ExceptionHandler(WebFluxServerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public Map<String, String> handleWebFluxServerExceptions(WebFluxServerException exception) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("Server error occurred while calling TMDB API:", exception.getMessage());
+        return errors;
+    }
+
+    @ExceptionHandler(WebFluxClientException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handleWebFluxClientExceptions(WebFluxClientException exception) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("Client error occurred while calling TMDB API:", exception.getMessage());
+        return errors;
+    }
 }
