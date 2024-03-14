@@ -26,6 +26,7 @@ public class MovieController {
         return ResponseEntity.ok(movieService.readAllMovies());
     }
 
+
     @GetMapping("/movies/TMDB/{id}")
     public ResponseEntity<MovieDetailsResponse> getTMDBMovie(@PathVariable Integer id) {
         return ResponseEntity.ok(tmdbService.findMovieFromTMDB(id));
