@@ -17,12 +17,13 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public List<Movie> readAllMovies() {
-        return movieRepository.findAll();
+    public List<MovieResponse> readAllMovies() {
+        return movieRepository.findAll().stream().map(this::toDto).toList();
     }
 
-    public Movie readMovie(Long id) {
-        return movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("movie", id));
+    public MovieResponse readMovie(Long id) {
+        return movieRepository.findById(id).map(this::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("movie", id));
     }
 
     public Movie createMovie(Movie newMovie) {
