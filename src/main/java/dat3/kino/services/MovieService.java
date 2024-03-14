@@ -1,5 +1,6 @@
 package dat3.kino.services;
 
+import dat3.kino.dto.request.MovieRequest;
 import dat3.kino.dto.response.MovieResponse;
 import dat3.kino.entities.Movie;
 import dat3.kino.exception.EntityNotFoundException;
@@ -26,8 +27,10 @@ public class MovieService {
                 .orElseThrow(() -> new EntityNotFoundException("movie", id));
     }
 
-    public Movie createMovie(Movie newMovie) {
-        return movieRepository.save(newMovie);
+    public MovieResponse createMovie(MovieRequest movieRequest) {
+        Movie newMovie = toEntity(movieRequest);
+        movieRepository.save(newMovie);
+        return toDto(newMovie);
     }
 
     private MovieResponse toDto(Movie movie) {
@@ -37,6 +40,16 @@ public class MovieService {
             movie.getPoster(),
             movie.getRuntime(),
             movie.getPremiere()
+        );
+    }
+
+    private Movie toEntity(MovieRequest movieRequest) {
+        return new Movie(
+                movieRequest.id(),
+                movieRequest.title(),
+                movieRequest.poster(),
+                movieRequest.runtime(),
+                movieRequest.premiere()
         );
     }
 }

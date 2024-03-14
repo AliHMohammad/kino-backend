@@ -4,6 +4,7 @@ import dat3.kino.entities.Auditorium;
 import dat3.kino.entities.Cinema;
 import dat3.kino.entities.Movie;
 import dat3.kino.entities.SeatPricing;
+import dat3.kino.repositories.MovieRepository;
 import dat3.kino.services.AuditoriumService;
 import dat3.kino.services.CinemaService;
 import dat3.kino.services.MovieService;
@@ -20,12 +21,15 @@ public class SetupCinemaData implements ApplicationRunner {
     private final AuditoriumService auditoriumService;
     private final SeatPricingService seatPricingService;
     private final MovieService movieService;
+    private final MovieRepository movieRepository;
 
-public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService) {
+    public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
+                           MovieRepository movieRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
         this.movieService = movieService;
+        this.movieRepository = movieRepository;
     }
 
     @Override
@@ -85,12 +89,11 @@ public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditorium
         // initMovies
         if(movieService.readAllMovies().isEmpty()) {
             System.out.println("Creating movies");
-
-            movieService.createMovie(movie1);
-            movieService.createMovie(movie2);
-            movieService.createMovie(movie3);
-            movieService.createMovie(movie4);
-            movieService.createMovie(movie5);
+            movieRepository.save(movie1);
+            movieRepository.save(movie2);
+            movieRepository.save(movie3);
+            movieRepository.save(movie4);
+            movieRepository.save(movie5);
         }
     }
 }
