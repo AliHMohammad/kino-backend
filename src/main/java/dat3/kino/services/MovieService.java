@@ -3,23 +3,43 @@ package dat3.kino.services;
 import dat3.kino.dto.request.MovieRequest;
 import dat3.kino.dto.response.MovieResponse;
 import dat3.kino.entities.Movie;
+import dat3.kino.entities.Screening;
 import dat3.kino.exception.EntityNotFoundException;
 import dat3.kino.repositories.MovieRepository;
+import dat3.kino.repositories.ScreeningRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final ScreeningRepository screeningRepository;
 
-    public MovieService(MovieRepository movieRepository) {
+
+    public MovieService(MovieRepository movieRepository, ScreeningRepository screeningRepository) {
         this.movieRepository = movieRepository;
+        this.screeningRepository = screeningRepository;
     }
 
     public List<MovieResponse> readAllMovies() {
         return movieRepository.findAll().stream().map(this::toDto).toList();
+    }
+
+    public List<MovieResponse> readMoviesByCinema(Long cinema) {
+        System.out.println("Cinema: " + cinema);
+
+        List<Screening> screenings = screeningRepository.findScreeningsByAuditorium_Cinema_Id(cinema);
+
+        Set<Movie> uniqueMovies = screenings.stream()
+                .map(Screening::getMovie)
+                .collect(Collectors.toSet());
+
+        return uniqueMovies.stream().map(this::toDto).toList();
     }
 
     public MovieResponse readMovie(Long id) {
