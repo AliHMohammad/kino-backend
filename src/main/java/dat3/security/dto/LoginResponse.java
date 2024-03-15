@@ -14,10 +14,12 @@ public class LoginResponse {
   private String username;
   private String token;
   private List<String> roles;
+  private String email;
 
-  public LoginResponse(String userName, String token, List<String> roles) {
+  public LoginResponse(String userName, String token, List<String> roles, String email) {
     this.username = userName;
     this.token = token;
     this.roles = roles;
+    this.email = email;
   }
 }

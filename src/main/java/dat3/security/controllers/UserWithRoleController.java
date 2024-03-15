@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/user-with-role")
+@RequestMapping("/api/user")
 public class UserWithRoleController {
 
   UserWithRolesService userWithRolesService;

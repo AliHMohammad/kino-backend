@@ -42,6 +42,11 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
@@ -75,7 +80,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -106,9 +115,9 @@
                 <configuration>
                     <!-- Comment in or out to disable/enable Security tests from your maven build -->
                     <excludedGroups>DisabledSecurityTest</excludedGroups>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+               </configuration>
+           </plugin>
+       </plugins>
+   </build>
 
 </project>
