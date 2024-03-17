@@ -33,6 +33,13 @@ public class MovieController {
         return ResponseEntity.ok(movieService.readAllMovies());
     }
 
+    @GetMapping("/movies/cinemas/{cinema}")
+    public ResponseEntity<List<MovieResponse>> getMoviesByCinema(@PathVariable Long cinema) {
+        System.out.println("Cinema: " + cinema);
+        return ResponseEntity.ok(movieService.readMoviesByCinema(cinema));
+    }
+
+
     @PostMapping("/movies")
     public ResponseEntity<MovieResponse> createMovie(@RequestBody MovieRequest movieRequest) {
         MovieResponse createdMovie = movieService.createMovie(movieRequest);
@@ -50,7 +57,5 @@ public class MovieController {
     @GetMapping("/movies/TMDB/{id}")
     public ResponseEntity<MovieDetailsResponse> getTMDBMovie(@PathVariable Integer id) {
         return ResponseEntity.ok(tmdbService.findMovieFromTMDB(id));
-    } 
-
-
+    }
 }

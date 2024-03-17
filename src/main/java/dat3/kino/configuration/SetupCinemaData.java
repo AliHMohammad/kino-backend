@@ -98,5 +98,15 @@ public class SetupCinemaData implements ApplicationRunner {
             movieRepository.save(movie4);
             movieRepository.save(movie5);
         }
+
+        // initScreenings
+        /*if(screeningService.readAllScreenings().isEmpty()) {
+            System.out.println("Creating screenings");
+            screeningService.createScreening(movie1, auditorium1, true, LocalDate.of(2024, 2, 27));
+            screeningService.createScreening(movie2, auditorium2, true, LocalDate.of(2024, 3, 2));
+            screeningService.createScreening(movie3, auditorium3, true, LocalDate.of(2024, 2, 22));
+            screeningService.createScreening(movie4, auditorium4, true, LocalDate.of(2024, 2, 14));
+            screeningService.createScreening(movie5, auditorium5, true, LocalDate.of(2024, 2, 1));
+        }*/
     }
 }
