@@ -1,6 +1,7 @@
 package dat3.kino.services;
 
 
+import dat3.kino.dto.request.MovieScreeningRequest;
 import dat3.kino.dto.request.ScreeningRequest;
 import dat3.kino.dto.response.ScreeningResponse;
 import dat3.kino.entities.Screening;
@@ -8,6 +9,9 @@ import dat3.kino.repositories.AuditoriumRepository;
 import dat3.kino.repositories.MovieRepository;
 import dat3.kino.repositories.ScreeningRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ScreeningService {
@@ -32,6 +36,11 @@ public class ScreeningService {
     public ScreeningResponse createScreening(ScreeningRequest screeningRequest) {
         Screening newScreening = screeningRepository.save(toEntity(screeningRequest));
         return toDTO(newScreening);
+    }
+
+    public List<ScreeningResponse> readMovieScreeningsInCinemaByStartAndEndDate(MovieScreeningRequest movieScreeningRequest) {
+        return screeningRepository.findAllByStartTimeBetweenAndAuditorium_Cinema_IdAndMovieId(movieScreeningRequest.startDate(), movieScreeningRequest.endDate() ,
+                movieScreeningRequest.cinemaId(), movieScreeningRequest.movieId()).stream().map(this::toDTO).toList();
     }
 
 
