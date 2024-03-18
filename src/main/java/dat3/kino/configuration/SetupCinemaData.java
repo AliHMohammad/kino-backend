@@ -1,20 +1,21 @@
 package dat3.kino.configuration;
 
+import dat3.kino.dto.request.ScreeningRequest;
 import dat3.kino.entities.Auditorium;
 import dat3.kino.entities.Cinema;
 import dat3.kino.entities.Movie;
 import dat3.kino.entities.SeatPricing;
 import dat3.kino.repositories.AuditoriumRepository;
 import dat3.kino.repositories.MovieRepository;
-import dat3.kino.services.AuditoriumService;
-import dat3.kino.services.CinemaService;
-import dat3.kino.services.MovieService;
-import dat3.kino.services.SeatPricingService;
+import dat3.kino.services.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
 
 @Component
 public class SetupCinemaData implements ApplicationRunner {
@@ -24,15 +25,17 @@ public class SetupCinemaData implements ApplicationRunner {
     private final MovieService movieService;
     private final MovieRepository movieRepository;
     private final AuditoriumRepository auditoriumRepository;
+    private final ScreeningService screeningService;
 
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
-                           MovieRepository movieRepository, AuditoriumRepository auditoriumRepository) {
+                           MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
         this.movieService = movieService;
         this.movieRepository = movieRepository;
         this.auditoriumRepository = auditoriumRepository;
+        this.screeningService = screeningService;
     }
 
     @Override
@@ -100,13 +103,14 @@ public class SetupCinemaData implements ApplicationRunner {
         }
 
         // initScreenings
-        /*if(screeningService.readAllScreenings().isEmpty()) {
+        if(screeningService.readAllScreenings().isEmpty()) {
+            LocalDateTime currentDateNextHour = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(1);
             System.out.println("Creating screenings");
-            screeningService.createScreening(movie1, auditorium1, true, LocalDate.of(2024, 2, 27));
-            screeningService.createScreening(movie2, auditorium2, true, LocalDate.of(2024, 3, 2));
-            screeningService.createScreening(movie3, auditorium3, true, LocalDate.of(2024, 2, 22));
-            screeningService.createScreening(movie4, auditorium4, true, LocalDate.of(2024, 2, 14));
-            screeningService.createScreening(movie5, auditorium5, true, LocalDate.of(2024, 2, 1));
-        }*/
+            screeningService.createScreening(new ScreeningRequest(693134L, 1L, currentDateNextHour, true));
+            screeningService.createScreening(new ScreeningRequest(1011985L, 2L, currentDateNextHour, true));
+            screeningService.createScreening(new ScreeningRequest(1119544L, 3L, currentDateNextHour, true));
+            screeningService.createScreening(new ScreeningRequest(802219L, 4L, currentDateNextHour, true));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 5L, currentDateNextHour, true));
+        }
     }
 }

@@ -9,6 +9,8 @@ import dat3.kino.repositories.MovieRepository;
 import dat3.kino.repositories.ScreeningRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ScreeningService {
 
@@ -28,6 +30,9 @@ public class ScreeningService {
         this.movieService = movieService;
     }
 
+    public List<ScreeningResponse> readAllScreenings() {
+        return screeningRepository.findAll().stream().map(this::toDTO).toList();
+    }
 
     public ScreeningResponse createScreening(ScreeningRequest screeningRequest) {
         Screening newScreening = screeningRepository.save(toEntity(screeningRequest));
