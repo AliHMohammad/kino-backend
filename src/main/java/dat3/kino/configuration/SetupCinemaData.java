@@ -104,13 +104,31 @@ public class SetupCinemaData implements ApplicationRunner {
 
         // initScreenings
         if(screeningService.readAllScreenings().isEmpty()) {
-            LocalDateTime currentDateNextHour = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(1);
+            LocalDateTime currentDateFirst = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(1);
+            LocalDateTime currentDateSecond = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(4);
+            LocalDateTime currentDateThird = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(7);
             System.out.println("Creating screenings");
-            screeningService.createScreening(new ScreeningRequest(693134L, 1L, currentDateNextHour, true));
-            screeningService.createScreening(new ScreeningRequest(1011985L, 2L, currentDateNextHour, true));
-            screeningService.createScreening(new ScreeningRequest(1119544L, 3L, currentDateNextHour, true));
-            screeningService.createScreening(new ScreeningRequest(802219L, 4L, currentDateNextHour, true));
-            screeningService.createScreening(new ScreeningRequest(1078249L, 5L, currentDateNextHour, true));
+            screeningService.createScreening(new ScreeningRequest(693134L, 1L, currentDateFirst, true));
+            screeningService.createScreening(new ScreeningRequest(1011985L, 2L, currentDateFirst, true));
+            screeningService.createScreening(new ScreeningRequest(1119544L, 3L, currentDateFirst, true));
+            screeningService.createScreening(new ScreeningRequest(802219L, 4L, currentDateFirst, true));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 5L, currentDateFirst, true));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 6L, currentDateFirst, true));
+
+            screeningService.createScreening(new ScreeningRequest(693134L, 1L, currentDateSecond, false));
+            screeningService.createScreening(new ScreeningRequest(1011985L, 2L, currentDateSecond, false));
+            screeningService.createScreening(new ScreeningRequest(1119544L, 3L, currentDateSecond, false));
+            screeningService.createScreening(new ScreeningRequest(802219L, 4L, currentDateSecond, true));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 5L, currentDateSecond, true));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 6L, currentDateSecond, true));
+
+            screeningService.createScreening(new ScreeningRequest(693134L, 1L, currentDateThird, true));
+            screeningService.createScreening(new ScreeningRequest(1011985L, 2L, currentDateThird, true));
+            screeningService.createScreening(new ScreeningRequest(1119544L, 3L, currentDateThird, true));
+            screeningService.createScreening(new ScreeningRequest(802219L, 4L, currentDateThird, false));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 5L, currentDateThird, false));
+            screeningService.createScreening(new ScreeningRequest(1078249L, 6L, currentDateThird, false));
+
         }
     }
 }
