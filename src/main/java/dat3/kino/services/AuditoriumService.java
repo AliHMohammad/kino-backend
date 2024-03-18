@@ -1,8 +1,10 @@
 package dat3.kino.services;
 
+import dat3.kino.dto.response.AuditoriumResponse;
 import dat3.kino.entities.Auditorium;
 import dat3.kino.entities.Seat;
 import dat3.kino.entities.SeatPricing;
+import dat3.kino.exception.EntityNotFoundException;
 import dat3.kino.repositories.AuditoriumRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class AuditoriumService {
         this.seatPricingService = seatPricingService;
     }
 
-    public Auditorium createAuditorium(Auditorium newAuditorium, int rows, int seatsPerRow) {
+    public AuditoriumResponse createAuditorium(Auditorium newAuditorium, int rows, int seatsPerRow) {
         Auditorium auditorium = auditoriumRepository.save(newAuditorium);
         // Create seats
         for (int i = 0; i < rows; i++) {
@@ -31,13 +33,8 @@ public class AuditoriumService {
                 seatService.createSeat(new Seat(seatNum, rowNum, seatPricing, auditorium));
             }
         }
-        return auditorium;
+        return toDTO(auditorium);
     }
-
-    public List<Auditorium> readAllAuditoriums() {
-        return auditoriumRepository.findAll();
-    }
-
 
     private SeatPricing getSeatPricing(int rows, int rowNum) {
 
@@ -48,5 +45,17 @@ public class AuditoriumService {
         } else {
             return seatPricingService.getSeatPricing("standard");
         }
+    }
+
+    public AuditoriumResponse readSingleAuditorium(Long id) {
+        return auditoriumRepository.findById(id).map(this::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("auditorium", id));
+    }
+
+    private AuditoriumResponse toDTO(Auditorium auditorium) {
+        return new AuditoriumResponse(
+                auditorium.getId(),
+                auditorium.getName()
+        );
     }
 }

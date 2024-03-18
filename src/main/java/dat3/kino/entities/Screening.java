@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class Screening {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +36,11 @@ public class Screening {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Screening(LocalDateTime startTime, Movie movie, Auditorium auditorium, Boolean is3d) {
+        this.startTime = startTime;
+        this.movie = movie;
+        this.auditorium = auditorium;
+        this.is3d = is3d;
+    }
 }

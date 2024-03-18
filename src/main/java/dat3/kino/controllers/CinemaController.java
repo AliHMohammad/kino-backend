@@ -1,5 +1,6 @@
 package dat3.kino.controllers;
 
+import dat3.kino.dto.response.AuditoriumResponse;
 import dat3.kino.dto.response.CinemaResponse;
 import dat3.kino.services.CinemaService;
 import org.springframework.http.CacheControl;
@@ -26,6 +27,11 @@ public class CinemaController {
         CacheControl cacheControl = CacheControl.maxAge(24, TimeUnit.HOURS).cachePublic();
 
         return ResponseEntity.ok().cacheControl(cacheControl).body(cinemas);
+    }
+
+    @GetMapping("/cinemas/{cinemaId}/auditoriums")
+    public ResponseEntity<List<AuditoriumResponse>> getAllAuditoriumsByCinemaId(@PathVariable("cinemaId") Long cinemaId) {
+        return ResponseEntity.ok(cinemaService.readAllAuditoriumsByCinemaId(cinemaId));
     }
 
     @GetMapping("/cinemas/{id}")

@@ -1,8 +1,11 @@
 package dat3.kino.services;
 
+import dat3.kino.dto.response.AuditoriumResponse;
 import dat3.kino.dto.response.CinemaResponse;
+import dat3.kino.entities.Auditorium;
 import dat3.kino.entities.Cinema;
 import dat3.kino.exception.EntityNotFoundException;
+import dat3.kino.repositories.AuditoriumRepository;
 import dat3.kino.repositories.CinemaRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +14,11 @@ import java.util.List;
 @Service
 public class CinemaService {
     private final CinemaRepository cinemaRepository;
+    private final AuditoriumRepository auditoriumRepository;
 
-    public CinemaService(CinemaRepository cinemaRepository) {
+    public CinemaService(CinemaRepository cinemaRepository, AuditoriumRepository auditoriumRepository) {
         this.cinemaRepository = cinemaRepository;
+        this.auditoriumRepository = auditoriumRepository;
     }
 
     public CinemaResponse createCinema(Cinema newCinema) {
@@ -26,6 +31,14 @@ public class CinemaService {
 
     public List<CinemaResponse> readAllCinemas() {
         return cinemaRepository.findAll().stream().map(this::toDTO).toList();
+    }
+
+    public List<AuditoriumResponse> readAllAuditoriumsByCinemaId(Long cinemaId) {
+        List<Auditorium> auditoriums = auditoriumRepository.findAllByCinemaId(cinemaId);
+        return auditoriums.stream().map((a) -> new AuditoriumResponse(
+                a.getId(),
+                a.getName()
+        )).toList();
     }
 
     // - updateCinema PATCH
