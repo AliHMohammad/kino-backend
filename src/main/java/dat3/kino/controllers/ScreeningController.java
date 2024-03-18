@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,12 @@ public class ScreeningController {
     }
 
     @GetMapping("/screenings")
-    public ResponseEntity<List<ScreeningResponse>> readMovieScreeningsInCinemaByStartAndEndDate(@RequestBody MovieScreeningRequest movieScreeningRequest) {
-        return ResponseEntity.ok(screeningService.readMovieScreeningsInCinemaByStartAndEndDate(movieScreeningRequest));
+    public ResponseEntity<List<ScreeningResponse>> readMovieScreeningsInCinemaByStartAndEndDate(
+            @RequestParam Long movieId,
+            @RequestParam Long cinemaId,
+            @RequestParam String startDate,
+            @RequestParam String endDate
+            ) {
+        return ResponseEntity.ok(screeningService.readMovieScreeningsInCinemaByStartAndEndDate(movieId, cinemaId, startDate, endDate));
     }
 }

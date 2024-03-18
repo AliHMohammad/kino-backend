@@ -13,6 +13,6 @@ public interface ScreeningRepository extends JpaRepository<Screening, Long> {
 
     List<Screening> findScreeningsByAuditorium_Cinema_Id(Long cinema);
 
-    List<Screening> findAllByStartTimeBetweenAndAuditorium_Cinema_IdAndMovieId(LocalDateTime start, LocalDateTime end, Long cinemaId, Long movieId);
+    List<Screening> findAllByStartTimeBetweenAndAuditorium_Cinema_IdAndMovieIdOrderByStartTime(LocalDateTime start, LocalDateTime end, Long cinemaId, Long movieId);
 
 }
