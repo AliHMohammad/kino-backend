@@ -1,6 +1,15 @@
 package dat3.kino.dto.response;
 
-public record PriceAdjustmentResponse (
-    String name,
-    double adjustment
-    ) {}
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Map;
+
+
+public record PriceAdjustmentResponse(
+        Map<String, Double> priceAdjustments
+) {
+}
+
+
