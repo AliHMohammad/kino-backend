@@ -29,7 +29,7 @@ public class SeatService {
                 seat.getSeatNum(),
                 seat.getRowNum(),
                 seat.getAuditorium().getId(),
-                seat.getSeatPricing().getName()
+                seat.getSeatPricing()
         );
     }
 
