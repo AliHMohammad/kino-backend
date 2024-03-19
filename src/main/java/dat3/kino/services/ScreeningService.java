@@ -1,6 +1,7 @@
 package dat3.kino.services;
 
 
+import dat3.kino.dto.request.MovieScreeningRequest;
 import dat3.kino.dto.request.ScreeningRequest;
 import dat3.kino.dto.response.ScreeningResponse;
 import dat3.kino.entities.Screening;
@@ -8,6 +9,10 @@ import dat3.kino.repositories.AuditoriumRepository;
 import dat3.kino.repositories.MovieRepository;
 import dat3.kino.repositories.ScreeningRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class ScreeningService {
@@ -28,10 +33,18 @@ public class ScreeningService {
         this.movieService = movieService;
     }
 
+    public List<ScreeningResponse> readAllScreenings() {
+        return screeningRepository.findAll().stream().map(this::toDTO).toList();
+    }
 
     public ScreeningResponse createScreening(ScreeningRequest screeningRequest) {
         Screening newScreening = screeningRepository.save(toEntity(screeningRequest));
         return toDTO(newScreening);
+    }
+
+    public List<ScreeningResponse> readMovieScreeningsInCinemaByStartAndEndDate(Long movieId, Long cinemaId, String startDate, String endDate) {
+        return screeningRepository.findAllByStartTimeBetweenAndAuditorium_Cinema_IdAndMovieIdOrderByStartTime(toLocalDateTime(startDate), toLocalDateTime(endDate),
+                cinemaId, movieId).stream().map(this::toDTO).toList();
     }
 
 
@@ -53,4 +66,10 @@ public class ScreeningService {
                 screeningRequest.is3D()
         );
     }
+
+    private LocalDateTime toLocalDateTime(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        return LocalDateTime.parse(date, formatter);
+    }
 }
+
