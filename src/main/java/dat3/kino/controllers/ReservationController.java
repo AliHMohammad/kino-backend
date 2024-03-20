@@ -6,7 +6,6 @@ import dat3.kino.entities.Reservation;
 import dat3.kino.services.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.List;
 import dat3.kino.dto.request.ReservationPriceRequest;
@@ -29,6 +28,7 @@ public class ReservationController {
     @PostMapping("/reservationPrice")
     public ResponseEntity<ReservationPriceResponse> calculateReservationPrice(@RequestBody ReservationPriceRequest reservationPriceRequest) {
         return ResponseEntity.ok(reservationService.calculateReservationPrice(reservationPriceRequest));
+    }
 
 
     @PostMapping("/reservations")
@@ -40,4 +40,5 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(reservationService.getAllReservationsByUserName(userId));
     }
+
 }

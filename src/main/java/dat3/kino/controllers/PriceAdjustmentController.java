@@ -18,7 +18,7 @@ public class PriceAdjustmentController {
         this.priceAdjustmentService = priceAdjustmentService;
     }
 
-    @GetMapping("/priceAdjustments")
+    @GetMapping("/priceadjustments")
     public ResponseEntity<PriceAdjustmentResponse> getPriceAdjustments() {
         return ResponseEntity.ok(priceAdjustmentService.readAllPriceAdjustments());
     }
