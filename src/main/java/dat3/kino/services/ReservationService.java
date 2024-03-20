@@ -1,17 +1,8 @@
 package dat3.kino.services;
 
 
-import dat3.kino.dto.request.ReservationRequest;
-import dat3.kino.dto.response.ReservationResponse;
-import dat3.kino.dto.response.SeatResponse;
 import dat3.kino.entities.Reservation;
-import dat3.kino.entities.Screening;
-import dat3.kino.entities.Seat;
 import dat3.kino.repositories.ReservationRepository;
-import dat3.kino.repositories.ScreeningRepository;
-import dat3.kino.repositories.SeatRepository;
-import dat3.security.entities.UserWithRoles;
-import dat3.security.repositories.UserWithRolesRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,22 +13,9 @@ import java.util.Set;
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final UserWithRolesRepository userWithRolesRepository;
-    private final ScreeningRepository screeningRepository;
-    private final SeatRepository seatRepository;
-    private final ScreeningService screeningService;
-    private final SeatService seatService;
 
-
-    public ReservationService(ReservationRepository reservationRepository,
-                              UserWithRolesRepository userWithRolesRepository, ScreeningRepository screeningRepository,
-                              SeatRepository seatRepository, ScreeningService screeningService, SeatService seatService) {
+    public ReservationService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-        this.userWithRolesRepository = userWithRolesRepository;
-        this.screeningRepository = screeningRepository;
-        this.seatRepository = seatRepository;
-        this.screeningService = screeningService;
-        this.seatService = seatService;
     }
 
     public List<Reservation> getAllReservations() {
@@ -64,11 +42,35 @@ public class ReservationService {
             selectedSeats.add(seatRepository.findById(seatId).orElseThrow());
         }
 
+
+
+
         Reservation reservation = toEntity(user, screening, selectedSeats);
         reservationRepository.save(reservation);
         return toDTO(reservation);
     }
 
+    public ReservationPriceResponse calculateReservationPrice(ReservationPriceRequest reservationPriceRequest) {
+        Screening screening = screeningRepository.findById(reservationPriceRequest.screeningId()).
+                orElseThrow(() -> new EntityNotFoundException("movie", reservationPriceRequest.screeningId()));
+        System.out.println(screening.getMovie());
+
+        boolean is3D = screening.getIs3d();
+        int runtime = screening.getMovie()
+                .getRuntime();
+
+
+        return toDto();
+    }
+
+    private ReservationPriceResponse toDto() {
+        return new ReservationPriceResponse(
+                1,
+                1,
+                1,
+                1
+        );
+    }
 
     private Reservation toEntity(UserWithRoles user, Screening screening, Set<Seat> seats) {
         return new Reservation(
