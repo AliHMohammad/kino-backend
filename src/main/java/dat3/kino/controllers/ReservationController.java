@@ -4,11 +4,11 @@ import dat3.kino.dto.request.ReservationRequest;
 import dat3.kino.dto.response.ReservationResponse;
 import dat3.kino.entities.Reservation;
 import dat3.kino.services.ReservationService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 public class ReservationController {
@@ -22,7 +22,12 @@ public class ReservationController {
 
 
     @PostMapping("/reservations")
-    public ReservationResponse createReservation(@RequestBody ReservationRequest reservationRequest, Principal principal) {
-        return reservationService.createReservation(reservationRequest, principal.getName());
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest, Principal principal) {
+        return ResponseEntity.ok(reservationService.createReservation(reservationRequest, principal.getName()));
+    }
+
+    @GetMapping("/reservations/users/{userId}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@PathVariable("userId") String userId) {
+        return ResponseEntity.ok(reservationService.getAllReservationsByUserName(userId));
     }
 }

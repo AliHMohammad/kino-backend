@@ -50,8 +50,8 @@ public class ReservationService {
         return reservationRepository.findAllByScreeningId(id);
     }
 
-    public List<Reservation> getAllReservationsByUserName(String name) {
-        return reservationRepository.findAllByUserUsername(name);
+    public List<ReservationResponse> getAllReservationsByUserName(String name) {
+        return reservationRepository.findAllByUserUsername(name).stream().map(this::toDTO).toList();
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest, String userId) {
