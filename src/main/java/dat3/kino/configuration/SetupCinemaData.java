@@ -26,19 +26,16 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final MovieService movieService;
     private final MovieRepository movieRepository;
     private final AuditoriumRepository auditoriumRepository;
-    private final PriceAdjustmentRepository priceAdjustmentRepository;
     private final ScreeningService screeningService;
     private final ReservationService reservationService;
     private final UserWithRolesService userWithRolesService;
     private final ScreeningRepository screeningRepository;
     private final SeatRepository seatRepository;
-    private final ReservationRepository reservationRepository;
-
 
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
                            MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
                            ReservationService reservationService, UserWithRolesService userWithRolesService, ScreeningRepository screeningRepository,
-                           SeatRepository seatRepository, ReservationRepository reservationRepository, PriceAdjustmentRepository priceAdjustmentRepository) {
+                           SeatRepository seatRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -46,12 +43,10 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         this.movieRepository = movieRepository;
         this.auditoriumRepository = auditoriumRepository;
         this.screeningService = screeningService;
-        this.priceAdjustmentRepository = priceAdjustmentRepository;
         this.reservationService = reservationService;
         this.userWithRolesService = userWithRolesService;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
-        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -109,7 +104,8 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         }
 
         // initPriceAdjustment
-        if (priceAdjustmentRepository.findAll().isEmpty()) {
+        if (priceAdjustmentRepository.findAll()
+                .isEmpty()) {
             System.out.println("Creating price adjustments");
 
             priceAdjustmentRepository.save(priceAdjustmentSmallGroup);
