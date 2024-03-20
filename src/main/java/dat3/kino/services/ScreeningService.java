@@ -5,6 +5,7 @@ import dat3.kino.dto.request.MovieScreeningRequest;
 import dat3.kino.dto.request.ScreeningRequest;
 import dat3.kino.dto.response.ScreeningResponse;
 import dat3.kino.entities.Screening;
+import dat3.kino.exception.EntityNotFoundException;
 import dat3.kino.repositories.AuditoriumRepository;
 import dat3.kino.repositories.MovieRepository;
 import dat3.kino.repositories.ScreeningRepository;
@@ -35,6 +36,11 @@ public class ScreeningService {
 
     public List<ScreeningResponse> readAllScreenings() {
         return screeningRepository.findAll().stream().map(this::toDTO).toList();
+    }
+
+    public ScreeningResponse readScreeningById(Long id) {
+        return screeningRepository.findById(id).map(this::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Screening", id));
     }
 
     public ScreeningResponse createScreening(ScreeningRequest screeningRequest) {

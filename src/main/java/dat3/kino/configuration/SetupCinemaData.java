@@ -2,21 +2,24 @@ package dat3.kino.configuration;
 
 import dat3.kino.dto.request.ScreeningRequest;
 import dat3.kino.entities.*;
-import dat3.kino.repositories.AuditoriumRepository;
-import dat3.kino.repositories.MovieRepository;
-import dat3.kino.repositories.PriceAdjustmentRepository;
+import dat3.kino.repositories.*;
 import dat3.kino.services.*;
+import dat3.security.entities.UserWithRoles;
+import dat3.security.services.UserWithRolesService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
-public class SetupCinemaData implements ApplicationRunner {
+public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final CinemaService cinemaService;
     private final AuditoriumService auditoriumService;
     private final SeatPricingService seatPricingService;
@@ -25,9 +28,17 @@ public class SetupCinemaData implements ApplicationRunner {
     private final AuditoriumRepository auditoriumRepository;
     private final PriceAdjustmentRepository priceAdjustmentRepository;
     private final ScreeningService screeningService;
+    private final ReservationService reservationService;
+    private final UserWithRolesService userWithRolesService;
+    private final ScreeningRepository screeningRepository;
+    private final SeatRepository seatRepository;
+    private final ReservationRepository reservationRepository;
+
 
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
-                           MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService, PriceAdjustmentRepository priceAdjustmentRepository) {
+                           MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
+                           ReservationService reservationService, UserWithRolesService userWithRolesService, ScreeningRepository screeningRepository,
+                           SeatRepository seatRepository, ReservationRepository reservationRepository, PriceAdjustmentRepository priceAdjustmentRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -36,6 +47,16 @@ public class SetupCinemaData implements ApplicationRunner {
         this.auditoriumRepository = auditoriumRepository;
         this.screeningService = screeningService;
         this.priceAdjustmentRepository = priceAdjustmentRepository;
+        this.reservationService = reservationService;
+        this.userWithRolesService = userWithRolesService;
+        this.screeningRepository = screeningRepository;
+        this.seatRepository = seatRepository;
+        this.reservationRepository = reservationRepository;
+    }
+
+    @Override
+    public int getOrder() {
+        return 2;
     }
 
     @Override
@@ -145,7 +166,19 @@ public class SetupCinemaData implements ApplicationRunner {
             screeningService.createScreening(new ScreeningRequest(802219L, 4L, currentDateThird, false));
             screeningService.createScreening(new ScreeningRequest(1078249L, 5L, currentDateThird, false));
             screeningService.createScreening(new ScreeningRequest(1078249L, 6L, currentDateThird, false));
+        }
 
+        //initReservations
+        if (reservationService.getAllReservations().isEmpty()) {
+            UserWithRoles user1 = userWithRolesService.readUserById("user1");
+            Screening sc1 = screeningRepository.findById(1L).orElse(null);
+            Set<Seat> seats = new HashSet<>();
+            seats.add(seatRepository.findById(3L).orElse(null));
+            seats.add(seatRepository.findById(4L).orElse(null));
+            seats.add(seatRepository.findById(10L).orElse(null));
+            seats.add(seatRepository.findById(12L).orElse(null));
+            seats.add(seatRepository.findById(13L).orElse(null));
+            reservationRepository.save((new Reservation(user1, sc1, seats)));
         }
     }
 }

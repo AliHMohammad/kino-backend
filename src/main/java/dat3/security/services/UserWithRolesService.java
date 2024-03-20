@@ -7,6 +7,7 @@ import dat3.security.entities.UserWithRoles;
 import dat3.security.repositories.RoleRepository;
 import dat3.security.repositories.UserWithRolesRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -104,6 +105,11 @@ public class UserWithRolesService {
       }
       userWithRoles.addRole(roleToAssign);
     }
+  }
+
+  public UserWithRoles readUserById(String name) {
+    return userWithRolesRepository.findById(name)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
   }
 
 }

@@ -21,4 +21,9 @@ public class SeatController {
     public ResponseEntity<List<SeatResponse>> getSeatsFromAuditorium(@PathVariable Long auditoriumId) {
         return ResponseEntity.ok(seatService.readAllSeatsFromAuditorium(auditoriumId));
     }
+
+    @GetMapping("/seats/screening/{screeningId}")
+    public ResponseEntity<List<SeatResponse>> getReservedSeatsByScreeningId(@PathVariable("screeningId") Long screeningId) {
+        return ResponseEntity.ok(seatService.GetAllReservedSeats(screeningId));
+    }
 }
