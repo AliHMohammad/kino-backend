@@ -8,7 +8,6 @@ import dat3.kino.entities.Reservation;
 import dat3.kino.entities.Screening;
 import dat3.kino.entities.Seat;
 import dat3.kino.exception.EntityNotFoundException;
-import dat3.kino.exception.FeeNotFoundException;
 import dat3.kino.repositories.PriceAdjustmentRepository;
 import dat3.kino.repositories.ReservationRepository;
 import dat3.kino.repositories.ScreeningRepository;
@@ -16,6 +15,8 @@ import dat3.kino.repositories.SeatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -50,33 +51,31 @@ public class ReservationService {
     public ReservationPriceResponse calculateReservationPrice(ReservationPriceRequest reservationPriceRequest) {
         Screening screening = screeningRepository.findById(reservationPriceRequest.screeningId()).
                 orElseThrow(() -> new EntityNotFoundException("movie", reservationPriceRequest.screeningId()));
-        System.out.println(screening.getMovie());
 
-        PriceAdjustment fee3D = priceAdjustmentRepository.findById("fee3D")
-                .orElseThrow(() -> new FeeNotFoundException("priceAdjustment", "fee3D"));
-
-        PriceAdjustment feeRuntime = priceAdjustmentRepository.findById("feeRuntime")
-                .orElseThrow(() -> new FeeNotFoundException("priceAdjustment", "feeRuntime"));
-
-        PriceAdjustment largeGroup = priceAdjustmentRepository.findById("largeGroup")
-                .orElseThrow(() -> new FeeNotFoundException("priceAdjustment", "largeGroup"));
-
-        PriceAdjustment smallGroup = priceAdjustmentRepository.findById("smallGroup")
-                .orElseThrow(() -> new FeeNotFoundException("priceAdjustment", "smallGroup"));
+        Map<String, Double> priceAdjustments = priceAdjustmentRepository.findAll()
+                .stream()
+                .collect(Collectors
+                        .toMap(PriceAdjustment::getName, PriceAdjustment::getAdjustment));
 
         double SEATS_SUM = calculateSeatsPrice(reservationPriceRequest.seatIds());
 
-        double GROUP_PRICE_ADJUSTMENT = reservationPriceRequest.seatIds()
-                .size() <= 5 ? smallGroup.getAdjustment() : reservationPriceRequest.seatIds()
-                .size() >= 10 ? largeGroup.getAdjustment() : 0;
+        String GROUP_SIZE = reservationPriceRequest.seatIds()
+                .size() <= 5 ? "smallGroup" : reservationPriceRequest.seatIds()
+                .size() >= 10 ? "largeGroup" : "";
 
 
-        double FEE_3D = screening.getIs3d() ? fee3D.getAdjustment() : 0;
-        double FEE_RUNTIME = screening.getMovie()
-                .getRuntime() > 170 ? feeRuntime.getAdjustment() : 0;
+//        double GROUP_PRICE_ADJUSTMENT = GROUP_SIZE.equals("smallGroup") ? priceAdjustments.get("smallGroup") : GROUP_SIZE.equals("largeGroup") ? priceAdjustments.get("largeGroup") : 1;
+//
+//        double SEATS_SUM_WITH_ADJUSTMENT = SEATS_SUM * GROUP_PRICE_ADJUSTMENT;
+
+        double FEES_SUM = calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments);
+
+        double DISCOUNT_SUM = calculateDiscount(GROUP_SIZE, SEATS_SUM, priceAdjustments);
+
+        double TOTAL = SEATS_SUM + FEES_SUM - DISCOUNT_SUM;
 
 
-        return toDto(SEATS_SUM);
+        return toReservationPriceDto(SEATS_SUM, DISCOUNT_SUM, FEES_SUM, TOTAL);
     }
 
     private double calculateSeatsPrice(List<Long> seats) {
@@ -85,18 +84,43 @@ public class ReservationService {
         return seatList.stream()
                 .reduce(0.0, (subtotal, seat) -> subtotal + seat.getSeatPricing()
                         .getPrice(), Double::sum);
+    }
+
+    private double calculateFees(Screening screening, String groupSize, double seatsSum, Map<String, Double> priceAdjustments) {
+
+        double FEE_3D = screening.getIs3d() ? priceAdjustments.get("fee3D") : 0;
+
+        double FEE_RUNTIME = screening.getMovie()
+                .getRuntime() > 160 ? priceAdjustments.get("feeRuntime") : 0;
+
+
+        double feeSum = 0;
+
+        if (groupSize.equals("smallGroup")) feeSum = priceAdjustments.get("smallGroup") * seatsSum - seatsSum;
+        if (FEE_3D > 0) feeSum += FEE_3D;
+        if (FEE_RUNTIME > 0) feeSum += FEE_RUNTIME;
+
+        return feeSum;
+    }
+
+    private double calculateDiscount(String groupSize, double seatsSum, Map<String, Double> priceAdjustments) {
+        double discountSum = 0;
+
+        if (groupSize.equals("largeGroup"))
+            discountSum += Math.abs(priceAdjustments.get("largeGroup") * seatsSum - seatsSum);
+
+        return discountSum;
 
     }
 
-    private ReservationPriceResponse toDto(double seatsSum) {
+    private ReservationPriceResponse toReservationPriceDto(double seatsSum, double discount, double fees, double total) {
         return new ReservationPriceResponse(
                 seatsSum,
-                1,
-                1,
-                1
+                fees,
+                discount,
+                total
         );
     }
-
 }
 
 
