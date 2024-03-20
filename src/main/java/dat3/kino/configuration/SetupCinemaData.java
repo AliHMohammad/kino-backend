@@ -26,6 +26,7 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final MovieService movieService;
     private final MovieRepository movieRepository;
     private final AuditoriumRepository auditoriumRepository;
+    private final PriceAdjustmentRepository priceAdjustmentRepository;
     private final ScreeningService screeningService;
     private final ReservationService reservationService;
     private final UserWithRolesService userWithRolesService;
@@ -37,7 +38,7 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
                            MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
                            ReservationService reservationService, UserWithRolesService userWithRolesService, ScreeningRepository screeningRepository,
-                           SeatRepository seatRepository, ReservationRepository reservationRepository) {
+                           SeatRepository seatRepository, ReservationRepository reservationRepository, PriceAdjustmentRepository priceAdjustmentRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -45,6 +46,7 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         this.movieRepository = movieRepository;
         this.auditoriumRepository = auditoriumRepository;
         this.screeningService = screeningService;
+        this.priceAdjustmentRepository = priceAdjustmentRepository;
         this.reservationService = reservationService;
         this.userWithRolesService = userWithRolesService;
         this.screeningRepository = screeningRepository;
@@ -70,6 +72,12 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         SeatPricing cowboy = new SeatPricing("cowboy", 50);
         SeatPricing standard = new SeatPricing("standard", 75);
         SeatPricing deluxe = new SeatPricing("deluxe", 100);
+
+        PriceAdjustment priceAdjustmentSmallGroup = new PriceAdjustment("smallGroup", 1.05);
+        PriceAdjustment priceAdjustmentLargeGroup = new PriceAdjustment("largeGroup", 0.93);
+        PriceAdjustment priceAdjustment3DFee = new PriceAdjustment("fee3D", 30);
+        PriceAdjustment priceAdjustmentRuntimeFee = new PriceAdjustment("feeRuntime", 20);
+
 
         Auditorium auditorium1 = new Auditorium("Sal 1", cinema1);
         Auditorium auditorium2 = new Auditorium("Sal 2", cinema1);
@@ -99,6 +107,17 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
             seatPricingService.createSeatPricing(standard);
             seatPricingService.createSeatPricing(deluxe);
         }
+
+        // initPriceAdjustment
+        if (priceAdjustmentRepository.findAll().isEmpty()) {
+            System.out.println("Creating price adjustments");
+
+            priceAdjustmentRepository.save(priceAdjustmentSmallGroup);
+            priceAdjustmentRepository.save(priceAdjustmentLargeGroup);
+            priceAdjustmentRepository.save(priceAdjustment3DFee);
+            priceAdjustmentRepository.save(priceAdjustmentRuntimeFee);
+        }
+
         // initAuditoriums
         if (auditoriumRepository.findAll().isEmpty()) {
             System.out.println("Creating auditoriums");
