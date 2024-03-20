@@ -26,4 +26,9 @@ public class PriceAdjustment {
     @ManyToMany(mappedBy = "priceAdjustment")
     @JsonIgnore
     private Set<Reservation> reservation = new HashSet<>();
+
+    public PriceAdjustment(String name, double value) {
+        this.name = name;
+        this.adjustment = value;
+    }
 }

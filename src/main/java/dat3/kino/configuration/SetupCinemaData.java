@@ -31,11 +31,12 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final UserWithRolesService userWithRolesService;
     private final ScreeningRepository screeningRepository;
     private final SeatRepository seatRepository;
+    private final PriceAdjustmentRepository priceAdjustmentRepository;
 
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
                            MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
                            ReservationService reservationService, UserWithRolesService userWithRolesService, ScreeningRepository screeningRepository,
-                           SeatRepository seatRepository) {
+                           SeatRepository seatRepository, PriceAdjustmentRepository priceAdjustmentRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -47,6 +48,7 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         this.userWithRolesService = userWithRolesService;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
+        this.priceAdjustmentRepository = priceAdjustmentRepository;
     }
 
     @Override
@@ -68,6 +70,11 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         SeatPricing standard = new SeatPricing("standard", 75);
         SeatPricing deluxe = new SeatPricing("deluxe", 100);
 
+        PriceAdjustment priceAdjustmentSmallGroup = new PriceAdjustment("smallGroup", 1.05);
+        PriceAdjustment priceAdjustmentLargeGroup = new PriceAdjustment("largeGroup", 0.93);
+        PriceAdjustment priceAdjustment3DFee = new PriceAdjustment("fee3D", 30);
+        PriceAdjustment priceAdjustmentRuntimeFee = new PriceAdjustment("feeRuntime", 20);
+
         Auditorium auditorium1 = new Auditorium("Sal 1", cinema1);
         Auditorium auditorium2 = new Auditorium("Sal 2", cinema1);
         Auditorium auditorium3 = new Auditorium("Sal 1", cinema2);
@@ -82,22 +89,37 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         Movie movie5 = new Movie(1078249L, "Den grænseløse", "/1T1nn9fAb1N46knsqaBiIpxm4M2.jpg", 132, LocalDate.of(2024, 2, 1));
 
         // initCinemas
-        if (cinemaService.readAllCinemas().isEmpty()) {
+        if (cinemaService.readAllCinemas()
+                .isEmpty()) {
             System.out.println("Creating cinemas");
 
             cinemaService.createCinema(cinema1);
             cinemaService.createCinema(cinema2);
         }
         // initSeatPricing
-        if (seatPricingService.readAllSeatPricing().isEmpty()) {
+        if (seatPricingService.readAllSeatPricing()
+                .isEmpty()) {
             System.out.println("Creating seat pricing");
 
             seatPricingService.createSeatPricing(cowboy);
             seatPricingService.createSeatPricing(standard);
             seatPricingService.createSeatPricing(deluxe);
         }
+
+        // initPriceAdjustment
+        if (priceAdjustmentRepository.findAll()
+                .isEmpty()) {
+            System.out.println("Creating price adjustments");
+
+            priceAdjustmentRepository.save(priceAdjustmentSmallGroup);
+            priceAdjustmentRepository.save(priceAdjustmentLargeGroup);
+            priceAdjustmentRepository.save(priceAdjustment3DFee);
+            priceAdjustmentRepository.save(priceAdjustmentRuntimeFee);
+        }
+
         // initAuditoriums
-        if (auditoriumRepository.findAll().isEmpty()) {
+        if (auditoriumRepository.findAll()
+                .isEmpty()) {
             System.out.println("Creating auditoriums");
 
             auditoriumService.createAuditorium(auditorium1, 20, 12);
@@ -109,7 +131,8 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         }
 
         // initMovies
-        if(movieService.readAllMovies().isEmpty()) {
+        if (movieService.readAllMovies()
+                .isEmpty()) {
             System.out.println("Creating movies");
             movieRepository.save(movie1);
             movieRepository.save(movie2);
@@ -119,10 +142,17 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         }
 
         // initScreenings
-        if(screeningService.readAllScreenings().isEmpty()) {
-            LocalDateTime currentDateFirst = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(1);
-            LocalDateTime currentDateSecond = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(4);
-            LocalDateTime currentDateThird = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(7);
+        if (screeningService.readAllScreenings()
+                .isEmpty()) {
+            LocalDateTime currentDateFirst = LocalDateTime.now()
+                    .truncatedTo(ChronoUnit.HOURS)
+                    .plusHours(1);
+            LocalDateTime currentDateSecond = LocalDateTime.now()
+                    .truncatedTo(ChronoUnit.HOURS)
+                    .plusHours(4);
+            LocalDateTime currentDateThird = LocalDateTime.now()
+                    .truncatedTo(ChronoUnit.HOURS)
+                    .plusHours(7);
             System.out.println("Creating screenings");
             screeningService.createScreening(new ScreeningRequest(693134L, 1L, currentDateFirst, true));
             screeningService.createScreening(new ScreeningRequest(1011985L, 2L, currentDateFirst, true));
@@ -147,15 +177,22 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         }
 
         //initReservations
-        if (reservationService.getAllReservations().isEmpty()) {
+        if (reservationService.getAllReservations()
+                .isEmpty()) {
             UserWithRoles user1 = userWithRolesService.readUserById("user1");
-            Screening sc1 = screeningRepository.findById(1L).orElse(null);
+            Screening sc1 = screeningRepository.findById(1L)
+                    .orElse(null);
             Set<Seat> seats = new HashSet<>();
-            seats.add(seatRepository.findById(3L).orElse(null));
-            seats.add(seatRepository.findById(4L).orElse(null));
-            seats.add(seatRepository.findById(10L).orElse(null));
-            seats.add(seatRepository.findById(12L).orElse(null));
-            seats.add(seatRepository.findById(13L).orElse(null));
+            seats.add(seatRepository.findById(3L)
+                    .orElse(null));
+            seats.add(seatRepository.findById(4L)
+                    .orElse(null));
+            seats.add(seatRepository.findById(10L)
+                    .orElse(null));
+            seats.add(seatRepository.findById(12L)
+                    .orElse(null));
+            seats.add(seatRepository.findById(13L)
+                    .orElse(null));
             Reservation reservation = reservationService.createReservation((new Reservation(user1, sc1, seats)));
         }
     }
