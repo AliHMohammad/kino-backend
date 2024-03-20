@@ -6,13 +6,14 @@ import dat3.security.repositories.RoleRepository;
 import dat3.security.repositories.UserWithRolesRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.Ordered;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.NoSuchElementException;
 
 @Component
-public class SetupDevUsers implements ApplicationRunner {
+public class SetupDevUsers implements ApplicationRunner, Ordered {
 
     UserWithRolesRepository userWithRolesRepository;
     RoleRepository roleRepository;
@@ -25,6 +26,11 @@ public class SetupDevUsers implements ApplicationRunner {
         this.pwEncoder = passwordEncoder;
 
         passwordUsedByAll = "test12";
+    }
+
+    @Override
+    public int getOrder() {
+        return 1;
     }
 
     public void run(ApplicationArguments args) {

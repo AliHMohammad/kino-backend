@@ -17,7 +17,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +39,11 @@ public class Reservation {
 
     @ManyToMany
     private Set<Seat> seat = new HashSet<>();
+
+
+    public Reservation(UserWithRoles user, Screening screening, Set<Seat> seats) {
+        this.user = user;
+        this.screening = screening;
+        this.seat = seats;
+    }
 }
