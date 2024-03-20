@@ -31,11 +31,13 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final UserWithRolesService userWithRolesService;
     private final ScreeningRepository screeningRepository;
     private final SeatRepository seatRepository;
+    private final ReservationRepository reservationRepository;
+
 
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
                            MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
                            ReservationService reservationService, UserWithRolesService userWithRolesService, ScreeningRepository screeningRepository,
-                           SeatRepository seatRepository) {
+                           SeatRepository seatRepository, ReservationRepository reservationRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -47,6 +49,7 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         this.userWithRolesService = userWithRolesService;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -156,7 +159,7 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
             seats.add(seatRepository.findById(10L).orElse(null));
             seats.add(seatRepository.findById(12L).orElse(null));
             seats.add(seatRepository.findById(13L).orElse(null));
-            Reservation reservation = reservationService.createReservation((new Reservation(user1, sc1, seats)));
+            reservationRepository.save((new Reservation(user1, sc1, seats)));
         }
     }
 }

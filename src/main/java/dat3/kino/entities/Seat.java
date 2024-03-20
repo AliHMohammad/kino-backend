@@ -2,7 +2,6 @@ package dat3.kino.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +31,7 @@ public class Seat {
     private Auditorium auditorium;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "seat")
+    @ManyToMany(mappedBy = "seats")
     private Set<Reservation> reservation = new HashSet<>();
 
     public Seat(Integer seatNum, Integer rowNum, SeatPricing seatPricing, Auditorium auditorium) {

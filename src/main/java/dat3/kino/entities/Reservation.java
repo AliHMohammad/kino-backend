@@ -2,7 +2,6 @@ package dat3.kino.entities;
 
 import dat3.security.entities.UserWithRoles;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,12 +37,12 @@ public class Reservation {
     private Set<PriceAdjustment> priceAdjustment = new HashSet<>();
 
     @ManyToMany
-    private Set<Seat> seat = new HashSet<>();
+    private Set<Seat> seats = new HashSet<>();
 
 
     public Reservation(UserWithRoles user, Screening screening, Set<Seat> seats) {
         this.user = user;
         this.screening = screening;
-        this.seat = seats;
+        this.seats = seats;
     }
 }
