@@ -18,10 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class PriceAdjustmentService {
 
+    // Repository for PriceAdjustment entities
     private final PriceAdjustmentRepository priceAdjustmentRepository;
+    // Repository for Seat entities
     private final SeatRepository seatRepository;
 
-
+    /**
+     * Constructor for the PriceAdjustmentService class.
+     * It initializes the repositories.
+     */
     public PriceAdjustmentService(PriceAdjustmentRepository priceAdjustmentRepository, SeatRepository seatRepository) {
         this.priceAdjustmentRepository = priceAdjustmentRepository;
         this.seatRepository = seatRepository;
@@ -38,7 +43,12 @@ public class PriceAdjustmentService {
         return toDto(priceAdjustments);
     }
 
-
+    /**
+     * Calculates the total price for a list of seats.
+     *
+     * @param seats A list of seat IDs.
+     * @return The total price for the seats.
+     */
     public double calculateSeatsPrice(List<Long> seats) {
         List<Seat> seatList = seatRepository.findAllById(seats);
 
@@ -47,6 +57,16 @@ public class PriceAdjustmentService {
                         .getPrice(), Double::sum);
     }
 
+    /**
+     * Calculates the total fees for a screening.
+     *
+     * @param screening The screening to calculate fees for.
+     * @param groupSize The size of the group.
+     * @param seatsSum The total price for the seats.
+     * @param priceAdjustments A map of price adjustments.
+     * @param numOfSeats The number of seats.
+     * @return The total fees for the screening.
+     */
     public double calculateFees(Screening screening, String groupSize, double seatsSum, Map<String, Double> priceAdjustments, int numOfSeats) {
 
         double FEE_3D = screening.getIs3d() ? priceAdjustments.get("fee3D") : 0;
@@ -64,6 +84,14 @@ public class PriceAdjustmentService {
         return feeSum;
     }
 
+    /**
+     * Calculates the total discount for a group size.
+     *
+     * @param groupSize The size of the group.
+     * @param seatsSum The total price for the seats.
+     * @param priceAdjustments A map of price adjustments.
+     * @return The total discount for the group size.
+     */
     public double calculateDiscount(String groupSize, double seatsSum, Map<String, Double> priceAdjustments) {
         double discountSum = 0;
 
@@ -74,7 +102,7 @@ public class PriceAdjustmentService {
 
     }
 
-  /**
+    /**
      * Converts a list of PriceAdjustment entities to a PriceAdjustmentResponse DTO.
      *
      * @param priceAdjustmentsList The list of PriceAdjustment entities to convert.

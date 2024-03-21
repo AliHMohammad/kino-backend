@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * Service class for managing reservations.
+ * It provides methods for creating, retrieving and calculating the price of reservations.
  */
 @Service
 public class ReservationService {
@@ -37,6 +38,7 @@ public class ReservationService {
 
     /**
      * Constructor for ReservationService.
+     * It initializes the repositories and services.
      *
      * @param reservationRepository Repository for managing reservation data.
      * @param screeningRepository Repository for managing screening data.
@@ -45,6 +47,7 @@ public class ReservationService {
      * @param priceAdjustmentRepository Repository for managing price adjustment data.
      * @param seatService Service for managing seat data.
      * @param screeningService Service for managing screening data.
+     * @param priceAdjustmentService Service for managing price adjustment data.
      */
     public ReservationService(ReservationRepository reservationRepository, ScreeningRepository screeningRepository,
                               UserWithRolesRepository userWithRolesRepository, SeatRepository seatRepository,
@@ -58,7 +61,12 @@ public class ReservationService {
         this.screeningService = screeningService;
         this.priceAdjustmentService = priceAdjustmentService;
     }
-  
+
+    /**
+     * Retrieves all reservations.
+     *
+     * @return A list of all reservations.
+     */
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
@@ -125,18 +133,23 @@ public class ReservationService {
         int NUM_OF_SEATS = reservationPriceRequest.seatIds()
                 .size();
 
-
         double FEES_SUM = priceAdjustmentService.calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments, NUM_OF_SEATS);
-
         double DISCOUNT_SUM = priceAdjustmentService.calculateDiscount(GROUP_SIZE, SEATS_SUM, priceAdjustments);
-
         double TOTAL = SEATS_SUM + FEES_SUM - DISCOUNT_SUM;
-
 
         return toReservationPriceDto(SEATS_SUM, DISCOUNT_SUM, FEES_SUM, TOTAL);
     }
 
 
+    /**
+     * Converts the calculated price details to a ReservationPriceResponse DTO.
+     *
+     * @param seatsSum The total price of the seats.
+     * @param discount The total discount.
+     * @param fees The total fees.
+     * @param total The total price.
+     * @return The converted ReservationPriceResponse DTO.
+     */
     private ReservationPriceResponse toReservationPriceDto(double seatsSum, double discount, double fees, double total) {
         return new ReservationPriceResponse(
                 seatsSum,
@@ -145,7 +158,6 @@ public class ReservationService {
                 total
         );
     }
-
 
     /**
      * Converts a ReservationRequest DTO to a Reservation entity.
@@ -162,7 +174,6 @@ public class ReservationService {
                 seats
         );
     }
-
 
     /**
      * Converts a Reservation entity to a ReservationResponse DTO.
