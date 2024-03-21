@@ -31,10 +31,11 @@ public class ReservationService {
     private final PriceAdjustmentRepository priceAdjustmentRepository;
     private final SeatService seatService;
     private final ScreeningService screeningService;
+    private final PriceAdjustmentService priceAdjustmentService;
 
     public ReservationService(ReservationRepository reservationRepository, ScreeningRepository screeningRepository,
                               UserWithRolesRepository userWithRolesRepository, SeatRepository seatRepository,
-                              PriceAdjustmentRepository priceAdjustmentRepository, SeatService seatService, ScreeningService screeningService) {
+                              PriceAdjustmentRepository priceAdjustmentRepository, SeatService seatService, ScreeningService screeningService, PriceAdjustmentService priceAdjustmentService) {
         this.reservationRepository = reservationRepository;
         this.screeningRepository = screeningRepository;
         this.userWithRolesRepository = userWithRolesRepository;
@@ -43,6 +44,7 @@ public class ReservationService {
         this.seatService = seatService;
         this.screeningService = screeningService;
 
+        this.priceAdjustmentService = priceAdjustmentService;
     }
 
     public List<Reservation> getAllReservations() {
@@ -50,13 +52,16 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest, String userId) {
-        UserWithRoles user = userWithRolesRepository.findById(userId).orElseThrow();
-        Screening screening = screeningRepository.findById(reservationRequest.screeningId()).orElseThrow();
+        UserWithRoles user = userWithRolesRepository.findById(userId)
+                .orElseThrow();
+        Screening screening = screeningRepository.findById(reservationRequest.screeningId())
+                .orElseThrow();
 
         Set<Seat> selectedSeats = new HashSet<>();
 
         for (Long seatId : reservationRequest.seatIds()) {
-            selectedSeats.add(seatRepository.findById(seatId).orElseThrow());
+            selectedSeats.add(seatRepository.findById(seatId)
+                    .orElseThrow());
         }
 
         Reservation reservation = toEntity(user, screening, selectedSeats);
@@ -69,7 +74,10 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> getAllReservationsByUserName(String name) {
-        return reservationRepository.findAllByUserUsername(name).stream().map(this::toDTO).toList();
+        return reservationRepository.findAllByUserUsername(name)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public ReservationPriceResponse calculateReservationPrice(ReservationPriceRequest reservationPriceRequest) {
@@ -81,60 +89,23 @@ public class ReservationService {
                 .collect(Collectors
                         .toMap(PriceAdjustment::getName, PriceAdjustment::getAdjustment));
 
-        double SEATS_SUM = calculateSeatsPrice(reservationPriceRequest.seatIds());
+        double SEATS_SUM = priceAdjustmentService.calculateSeatsPrice(reservationPriceRequest.seatIds());
 
         String GROUP_SIZE = reservationPriceRequest.seatIds()
                 .size() <= 5 ? "smallGroup" : reservationPriceRequest.seatIds()
                 .size() >= 10 ? "largeGroup" : "";
 
+        int NUM_OF_SEATS = reservationPriceRequest.seatIds()
+                .size();
 
-//        double GROUP_PRICE_ADJUSTMENT = GROUP_SIZE.equals("smallGroup") ? priceAdjustments.get("smallGroup") : GROUP_SIZE.equals("largeGroup") ? priceAdjustments.get("largeGroup") : 1;
-//
-//        double SEATS_SUM_WITH_ADJUSTMENT = SEATS_SUM * GROUP_PRICE_ADJUSTMENT;
+        double FEES_SUM = priceAdjustmentService.calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments, NUM_OF_SEATS);
 
-        double FEES_SUM = calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments);
-
-        double DISCOUNT_SUM = calculateDiscount(GROUP_SIZE, SEATS_SUM, priceAdjustments);
+        double DISCOUNT_SUM = priceAdjustmentService.calculateDiscount(GROUP_SIZE, SEATS_SUM, priceAdjustments);
 
         double TOTAL = SEATS_SUM + FEES_SUM - DISCOUNT_SUM;
 
 
         return toReservationPriceDto(SEATS_SUM, DISCOUNT_SUM, FEES_SUM, TOTAL);
-    }
-
-    private double calculateSeatsPrice(List<Long> seats) {
-        List<Seat> seatList = seatRepository.findAllById(seats);
-
-        return seatList.stream()
-                .reduce(0.0, (subtotal, seat) -> subtotal + seat.getSeatPricing()
-                        .getPrice(), Double::sum);
-    }
-
-    private double calculateFees(Screening screening, String groupSize, double seatsSum, Map<String, Double> priceAdjustments) {
-
-        double FEE_3D = screening.getIs3d() ? priceAdjustments.get("fee3D") : 0;
-
-        double FEE_RUNTIME = screening.getMovie()
-                .getRuntime() > 160 ? priceAdjustments.get("feeRuntime") : 0;
-
-
-        double feeSum = 0;
-
-        if (groupSize.equals("smallGroup")) feeSum = priceAdjustments.get("smallGroup") * seatsSum - seatsSum;
-        if (FEE_3D > 0) feeSum += FEE_3D;
-        if (FEE_RUNTIME > 0) feeSum += FEE_RUNTIME;
-
-        return feeSum;
-    }
-
-    private double calculateDiscount(String groupSize, double seatsSum, Map<String, Double> priceAdjustments) {
-        double discountSum = 0;
-
-        if (groupSize.equals("largeGroup"))
-            discountSum += Math.abs(priceAdjustments.get("largeGroup") * seatsSum - seatsSum);
-
-        return discountSum;
-
     }
 
     private ReservationPriceResponse toReservationPriceDto(double seatsSum, double discount, double fees, double total) {
@@ -146,7 +117,6 @@ public class ReservationService {
         );
     }
 
-
     private Reservation toEntity(UserWithRoles user, Screening screening, Set<Seat> seats) {
         return new Reservation(
                 user,
@@ -155,18 +125,19 @@ public class ReservationService {
         );
     }
 
-
     private ReservationResponse toDTO(Reservation reservation) {
         List<SeatResponse> seatResponseList = new ArrayList<>();
 
-        for (Seat seat: reservation.getSeats()) {
+        for (Seat seat : reservation.getSeats()) {
             seatResponseList.add(seatService.readSeatById(seat.getId()));
         }
 
         return new ReservationResponse(
                 reservation.getId(),
-                reservation.getUser().getUsername(),
-                screeningService.readScreeningById(reservation.getScreening().getId()),
+                reservation.getUser()
+                        .getUsername(),
+                screeningService.readScreeningById(reservation.getScreening()
+                        .getId()),
                 seatResponseList,
                 reservation.getCreatedAt()
         );
