@@ -15,6 +15,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Initializes the application with cinema data upon startup.
+ * This class implements {@link ApplicationRunner} to execute the initialization process
+ * after the Spring context is fully loaded and the application has started.
+ * It sets up initial data like cinemas, seat pricing, price adjustments, auditoriums, movies, and screenings.
+ */
 @Component
 public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final CinemaService cinemaService;
@@ -26,10 +32,21 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final ScreeningService screeningService;
     private final PriceAdjustmentRepository priceAdjustmentRepository;
 
-
+    /**
+     * Constructs the data setup instance with required services and repositories.
+     *
+     * @param cinemaService              The service for managing cinema entities.
+     * @param auditoriumService          The service for managing auditorium entities.
+     * @param seatPricingService         The service for managing seat pricing.
+     * @param movieService               The service for managing movie entities.
+     * @param movieRepository            The repository for accessing movie data.
+     * @param auditoriumRepository       The repository for accessing auditorium data.
+     * @param screeningService           The service for managing screening entities.
+     * @param priceAdjustmentRepository  The repository for accessing price adjustment data.
+     */
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
                            MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
-                            PriceAdjustmentRepository priceAdjustmentRepository) {
+                           PriceAdjustmentRepository priceAdjustmentRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -40,17 +57,34 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         this.priceAdjustmentRepository = priceAdjustmentRepository;
     }
 
+    /**
+     * Specifies the order in which this application runner should be executed.
+     *
+     * @return the order value
+     */
     @Override
     public int getOrder() {
-        return 2;
+        return 2; // Order in which this runner should be executed
     }
 
+    /**
+     * Initializes the cinema data.
+     * This method is called after the application context is loaded and the application has started.
+     *
+     * @param args the application arguments
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("Application is running");
         init();
     }
 
+    /**
+     * Handles the actual initialization of cinema data.
+     * This includes creating cinemas, seat pricing, price adjustments, auditoriums, movies, and screenings
+     * if they do not already exist.
+     */
     private void init() {
         Cinema cinema1 = new Cinema("Empire Bio", "Copenhagen", true);
         Cinema cinema2 = new Cinema("Cinemaxx", "Aarhus", true);
