@@ -1,34 +1,68 @@
-# startcode-with-security
+# Kino Backend
 
-[![Build and deploy JAR app to Azure Web App - kino-api](https://github.com/AliHMohammad/kino-backend/actions/workflows/production_kino-api.yml/badge.svg)](https://github.com/AliHMohammad/kino-backend/actions/workflows/production_kino-api.yml)
+This is a Java Spring Boot application for managing the kino.
+
+### Prerequisites
+
+- Java 17 or higher
+- MySQL
+
+### Setup
+
+#### 1. Clone the repository:
+   ```
+   git clone https://github.com/AliHMohammad/kino-backend.git
+   ```
+#### 2. Navigate to the project directory:
+
+    cd kino-backend
+
+#### 3. Update the `src/main/resources/application.properties` file with your MySQL credentials:
+
+    spring.datasource.url=${JDBC_DATABASE_URL}
+    spring.datasource.username=${JDBC_USERNAME}
+    spring.datasource.password=${JDBC_PASSWORD}
+
+#### 4. Update the `src/main/resources/application.properties` file with your Admin credentials
+
+    app.admin-username=${ADMIN_USERNAME}
+    app.admin-email=${ADMIN_EMAIL}
+    app.admin-password=${ADMIN_PASSWORD}
+
+#### 5. Update the `src/main/resources/application.properties` file with your TMDB bearer token. 
+You can grab your own free token [here](https://developer.themoviedb.org/reference/intro/getting-started) 
+
+    tmdb.api.key=${TMDB_API_KEY}
+
+#### 6. Build the project:
+
+    You can build the project using one of the following methods:
+
+Option 1 - Using Maven:
+
+      mvn clean install
+
+Option 2 - Using mvnw (MacOs & Linux - or Windows with Git Bash or WSL):
+
+    ./mvnw clean install
+Option 3 - Using mwvnw.cmd (Windows):
+
+      mvnw.cmd clean install
 
 
-[Supplementing Google Doc](https://docs.google.com/document/d/1k5T7rRSrGetjuMdYoErk4ToZTk22QyBpR-x17nmtRos/edit?usp=sharing)
+#### 7. Run the application:
 
-Clone (prefered) or fork the project
-If cloned delete the hidden .git folder and do a new git init
+    java -jar target/hogwarts-student-admin-0.0.1-SNAPSHOT.jar
 
-Se this [short video](https://www.youtube.com/watch?v=aISFmtX-vfA)
-for how to use the code for the cars'R' Us project and future projects this semester where you need Security
+The application should now be running at `http://localhost:8080`.
 
-### Info
+### Documentation
 
-If you use this as the very start of your own projects, delete the security-zipped folder after cloning.
-These files are meant to include this project into an EXISTING project, as described in the supplementing Google Doc
+For more detailed information about the application, please refer to the [JavaDocs for the project](#) and [API documentation](https://kino-api.azurewebsites.net/).
 
-### Short text-version of what the video above goes through
-- Clone/fork the project, and do what it takes to create you own git-folder, and after that, git-repo
-- Create the MySQL database you plan to use for the project on your local MySQL instance
-- Add the environment variables to Intellij, necessary to connect to the database. Remember to uncomment where these are read in **application.properties**, otherwise it will use H2.
-- Rename (REFACTOR) the package name rename_me into something that makes sense
-- If you only need plain users (username=primary key, email and password) use it as is
-- If you need specialised users, extend the `UserWithRoles` class
-- Default POST login-endpoint is here: **/api/auth/login**
-  
-  Add this JSON with the login request:
-  ```
-  {
-  "username" : "user1",
-  "password" : "test12"
-  }
-  ```
+### Build Status (Production branch)
+
+[![Build and deploy JAR app to Azure Web App - kino-api](https://github.com/AliHMohammad/kino-backend/actions/workflows/production_kino-api.yml/badge.svg?branch=production)](https://github.com/AliHMohammad/kino-backend/actions/workflows/production_kino-api.yml)
+### Deployment
+
+The application is deployed to Azure Web App. You can access it [here](https://kino-api.azurewebsites.net/).

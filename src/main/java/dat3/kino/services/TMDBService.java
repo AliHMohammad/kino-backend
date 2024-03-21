@@ -11,18 +11,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-
+/**
+ * Service class for interacting with The Movie Database (TMDB) API.
+ */
 @Service
 public class TMDBService {
     private final WebClient webClient;
 
+    // The API key for TMDB, injected from application properties
     @Value("${tmdb.api.key}")
     private String apiKey;
 
+    /**
+     * Constructor for TMDBService.
+     * @param webClientBuilder WebClient.Builder instance for creating WebClient
+     */
     public TMDBService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://api.themoviedb.org/3").build();
     }
 
+    /**
+     * Fetches movie details from TMDB API.
+     * @param id The id of the movie to fetch details for
+     * @return MovieDetailsResponse containing details of the movie
+     */
     public MovieDetailsResponse findMovieFromTMDB(Integer id) {
         String apiPath = "/movie/" + id + "?language=en-US";
 
@@ -44,6 +56,11 @@ public class TMDBService {
         return toDto(response);
     }
 
+    /**
+     * Converts TmdbMovieDetailsResponse to MovieDetailsResponse.
+     * @param tmdbMovieDetails The TmdbMovieDetailsResponse instance to convert
+     * @return MovieDetailsResponse instance containing the same data
+     */
     private MovieDetailsResponse toDto(TmdbMovieDetailsResponse tmdbMovieDetails) {
         return new MovieDetailsResponse(
                 tmdbMovieDetails.id(),

@@ -53,14 +53,14 @@ public class SecurityConfig {
 
     http.authorizeHttpRequests((authorize) -> authorize
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/auth/login")).permitAll()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/user-with-role")).permitAll() //Clients can create a user for themself
-
-            //This is for demo purposes only, and should be removed for a real system
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/demo/anonymous")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/user")).permitAll() //Clients can create a user for themself
 
             //Allow index.html for anonymous users
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/index.html")).permitAll()
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/docs/**")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api-docs.json")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/index.css")).permitAll()
 
             //Allow for swagger-ui
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/swagger-ui/**")).permitAll()
@@ -70,13 +70,35 @@ public class SecurityConfig {
             //Required for error responses
             .requestMatchers(mvcMatcherBuilder.pattern("/error")).permitAll()
 
-            //This is for demo purposes only, and should be removed for a real system
-            //.requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/test/user-only")).hasAuthority("USER")
-            //.requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/test/admin-only")).hasAuthority("ADMIN")
+            //CinemaController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/cinemas")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/cinemas/{cinemaId}/auditoriums")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/cinemas/{id}")).permitAll()
 
-            //Use this to completely disable security (Will not work if endpoints has been marked with @PreAuthorize)
-            .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll());
-//            .anyRequest().authenticated());
+            //MovieController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/movies")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/movies/cinemas/{cinema}")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/movies")).hasAuthority("ADMIN") // Create movies
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/movies/TMDB/{id}")).permitAll()
+
+            //PriceAdjustmentController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/priceadjustments")).hasAuthority("USER")
+
+            //ReservationController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/reservationPrice")).hasAuthority("USER")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/reservation")).hasAuthority("USER")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/reservations/users/{userId}")).hasAuthority("USER")
+
+            //ScreeningController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/screenings")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/screenings")).hasAuthority("ADMIN")
+
+            //SeatController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/seats/auditorium/{auditoriumId}")).hasAuthority("USER")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/seats/screening/{screeningId}")).hasAuthority("USER")
+
+            //Other
+            .anyRequest().authenticated());
 
     return http.build();
   }

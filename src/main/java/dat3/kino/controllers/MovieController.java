@@ -3,21 +3,16 @@ package dat3.kino.controllers;
 import dat3.kino.dto.request.MovieRequest;
 import dat3.kino.dto.response.MovieDetailsResponse;
 import dat3.kino.dto.response.MovieResponse;
-import dat3.kino.entities.Movie;
 import dat3.kino.services.MovieService;
 import dat3.kino.services.TMDBService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 public class MovieController {
 
     private final MovieService movieService;
@@ -39,7 +34,6 @@ public class MovieController {
         return ResponseEntity.ok(movieService.readMoviesByCinema(cinema));
     }
 
-
     @PostMapping("/movies")
     public ResponseEntity<MovieResponse> createMovie(@RequestBody MovieRequest movieRequest) {
         MovieResponse createdMovie = movieService.createMovie(movieRequest);
@@ -52,7 +46,6 @@ public class MovieController {
 
         return ResponseEntity.created(location).body(createdMovie);
     }
-
 
     @GetMapping("/movies/TMDB/{id}")
     public ResponseEntity<MovieDetailsResponse> getTMDBMovie(@PathVariable Integer id) {

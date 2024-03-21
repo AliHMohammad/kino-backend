@@ -10,28 +10,42 @@ import org.springframework.validation.FieldError;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler class.
+ * This class is annotated with @ControllerAdvice to handle exceptions globally across the whole application.
+ */
 @ControllerAdvice
-//NOTE: @ControllerAdvice is used to define a global exception handler
 public class GlobalExceptionHandler {
-    //NOTE: @ExceptionHandler is used to handle exceptions in specific handler classes and/or globally
+
+    /**
+     * Handles validation exceptions.
+     * This method is annotated with @ExceptionHandler to handle MethodArgumentNotValidException globally.
+     * It returns a map of field names and their corresponding error messages.
+     *
+     * @param exception the exception to handle
+     * @return a map of field names and their corresponding error messages
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    //NOTE: @ResponseStatus is used to specify the HTTP response status code for the method
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    //NOTE: @ResponseBody is used to bind the method return value to the web response body
     @ResponseBody
-    // Handle validation exceptions by returning a map of field names and their corresponding error messages
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
-        // for each error in the exception, add the field name and error message to the map
         exception.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        // return the map of errors
         return errors;
     }
 
+    /**
+     * Handles EntityNotFoundException.
+     * This method is annotated with @ExceptionHandler to handle EntityNotFoundException globally.
+     * It returns a map with the error message.
+     *
+     * @param exception the exception to handle
+     * @return a map with the error message
+     */
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -41,6 +55,14 @@ public class GlobalExceptionHandler {
         return errors;
     }
 
+    /**
+     * Handles SeatPricingNotFoundException.
+     * This method is annotated with @ExceptionHandler to handle SeatPricingNotFoundException globally.
+     * It returns a map with the error message.
+     *
+     * @param exception the exception to handle
+     * @return a map with the error message
+     */
     @ExceptionHandler(SeatPricingNotFoundExeption.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -50,6 +72,14 @@ public class GlobalExceptionHandler {
         return errors;
     }
 
+    /**
+     * Handles WebFluxServerException.
+     * This method is annotated with @ExceptionHandler to handle WebFluxServerException globally.
+     * It returns a map with the error message.
+     *
+     * @param exception the exception to handle
+     * @return a map with the error message
+     */
     @ExceptionHandler(WebFluxServerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
@@ -59,6 +89,14 @@ public class GlobalExceptionHandler {
         return errors;
     }
 
+    /**
+     * Handles WebFluxClientException.
+     * This method is annotated with @ExceptionHandler to handle WebFluxClientException globally.
+     * It returns a map with the error message.
+     *
+     * @param exception the exception to handle
+     * @return a map with the error message
+     */
     @ExceptionHandler(WebFluxClientException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
