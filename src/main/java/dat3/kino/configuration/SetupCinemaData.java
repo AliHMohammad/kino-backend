@@ -168,17 +168,5 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
             screeningService.createScreening(new ScreeningRequest(1078249L, 6L, currentDateThird, false));
         }
 
-        //initReservations
-        if (reservationService.getAllReservations().isEmpty()) {
-            UserWithRoles user1 = userWithRolesService.readUserById("user1");
-            Screening sc1 = screeningRepository.findById(1L).orElse(null);
-            Set<Seat> seats = new HashSet<>();
-            seats.add(seatRepository.findById(3L).orElse(null));
-            seats.add(seatRepository.findById(4L).orElse(null));
-            seats.add(seatRepository.findById(10L).orElse(null));
-            seats.add(seatRepository.findById(12L).orElse(null));
-            seats.add(seatRepository.findById(13L).orElse(null));
-            reservationRepository.save((new Reservation(user1, sc1, seats)));
-        }
     }
 }
