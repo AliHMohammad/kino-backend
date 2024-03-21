@@ -5,14 +5,14 @@ import dat3.kino.dto.response.CinemaResponse;
 import dat3.kino.services.CinemaService;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Controller
+@RestController
 public class CinemaController {
     private final CinemaService cinemaService;
 
