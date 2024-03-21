@@ -64,10 +64,6 @@ public class ReservationService {
         return toDTO(reservation);
     }
 
-    public List<Reservation> getAllReservationsByScreeningId(Long id) {
-        return reservationRepository.findAllByScreeningId(id);
-    }
-
     public List<ReservationResponse> getAllReservationsByUserName(String name) {
         return reservationRepository.findAllByUserUsername(name).stream().map(this::toDTO).toList();
     }
