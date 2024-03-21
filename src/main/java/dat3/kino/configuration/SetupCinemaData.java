@@ -31,11 +31,13 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
     private final UserWithRolesService userWithRolesService;
     private final ScreeningRepository screeningRepository;
     private final SeatRepository seatRepository;
+    private final PriceAdjustmentRepository priceAdjustmentRepository;
+    private final ReservationRepository reservationRepository;
 
     public SetupCinemaData(CinemaService cinemaService, AuditoriumService auditoriumService, SeatPricingService seatPricingService, MovieService movieService,
                            MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, ScreeningService screeningService,
                            ReservationService reservationService, UserWithRolesService userWithRolesService, ScreeningRepository screeningRepository,
-                           SeatRepository seatRepository) {
+                           SeatRepository seatRepository, PriceAdjustmentRepository priceAdjustmentRepository, ReservationRepository reservationRepository) {
         this.cinemaService = cinemaService;
         this.auditoriumService = auditoriumService;
         this.seatPricingService = seatPricingService;
@@ -47,6 +49,8 @@ public class SetupCinemaData implements ApplicationRunner, Ordered {
         this.userWithRolesService = userWithRolesService;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
+        this.priceAdjustmentRepository = priceAdjustmentRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override

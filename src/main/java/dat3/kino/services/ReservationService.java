@@ -4,6 +4,9 @@ package dat3.kino.services;
 import dat3.kino.dto.request.ReservationPriceRequest;
 import dat3.kino.dto.request.ReservationRequest;
 import dat3.kino.dto.response.ReservationPriceResponse;
+import dat3.kino.dto.response.ReservationResponse;
+import dat3.kino.dto.response.SeatResponse;
+import dat3.kino.entities.PriceAdjustment;
 import dat3.kino.entities.Reservation;
 import dat3.kino.entities.Screening;
 import dat3.kino.entities.Seat;
@@ -11,20 +14,35 @@ import dat3.kino.exception.EntityNotFoundException;
 import dat3.kino.repositories.PriceAdjustmentRepository;
 import dat3.kino.repositories.ReservationRepository;
 import dat3.kino.repositories.ScreeningRepository;
+import dat3.kino.repositories.SeatRepository;
+import dat3.security.entities.UserWithRoles;
+import dat3.security.repositories.UserWithRolesRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ScreeningRepository screeningRepository;
+    private final UserWithRolesRepository userWithRolesRepository;
+    private final SeatRepository seatRepository;
+    private final PriceAdjustmentRepository priceAdjustmentRepository;
+    private final SeatService seatService;
+    private final ScreeningService screeningService;
 
-    public ReservationService(ReservationRepository reservationRepository, ScreeningRepository screeningRepository) {
+    public ReservationService(ReservationRepository reservationRepository, ScreeningRepository screeningRepository,
+                              UserWithRolesRepository userWithRolesRepository, SeatRepository seatRepository,
+                              PriceAdjustmentRepository priceAdjustmentRepository, SeatService seatService, ScreeningService screeningService) {
         this.reservationRepository = reservationRepository;
         this.screeningRepository = screeningRepository;
+        this.userWithRolesRepository = userWithRolesRepository;
+        this.seatRepository = seatRepository;
+        this.priceAdjustmentRepository = priceAdjustmentRepository;
+        this.seatService = seatService;
+        this.screeningService = screeningService;
+
     }
 
     public List<Reservation> getAllReservations() {
@@ -50,8 +68,8 @@ public class ReservationService {
         return reservationRepository.findAllByScreeningId(id);
     }
 
-    public List<Reservation> getAllReservationsByUserName(String name) {
-        return reservationRepository.findAllByUserUsername(name);
+    public List<ReservationResponse> getAllReservationsByUserName(String name) {
+        return reservationRepository.findAllByUserUsername(name).stream().map(this::toDTO).toList();
     }
 
     public ReservationPriceResponse calculateReservationPrice(ReservationPriceRequest reservationPriceRequest) {
