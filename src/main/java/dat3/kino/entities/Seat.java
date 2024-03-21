@@ -40,5 +40,4 @@ public class Seat {
         this.seatPricing = seatPricing;
         this.auditorium = auditorium;
     }
-
 }

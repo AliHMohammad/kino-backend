@@ -1,7 +1,6 @@
 package dat3.kino.services;
 
 
-import dat3.kino.dto.request.MovieScreeningRequest;
 import dat3.kino.dto.request.ScreeningRequest;
 import dat3.kino.dto.response.ScreeningResponse;
 import dat3.kino.entities.Screening;

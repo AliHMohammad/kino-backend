@@ -45,10 +45,6 @@ public class ReservationService {
 
     }
 
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
-    }
-
     public ReservationResponse createReservation(ReservationRequest reservationRequest, String userId) {
         UserWithRoles user = userWithRolesRepository.findById(userId).orElseThrow();
         Screening screening = screeningRepository.findById(reservationRequest.screeningId()).orElseThrow();

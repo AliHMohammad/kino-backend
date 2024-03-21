@@ -41,21 +41,6 @@ public class CinemaService {
         )).toList();
     }
 
-    // - updateCinema PATCH
-    public CinemaResponse updateCinemaPartially (Long id, Cinema cinema) {
-        Cinema cinemaToUpdate = cinemaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cinema", id));
-        if (cinema.getName() != null) {
-            cinemaToUpdate.setName(cinema.getName());
-        }
-        if (cinema.getCity() != null) {
-            cinemaToUpdate.setCity(cinema.getCity());
-        }
-        if (cinema.getIsActive() !=null) {
-            cinemaToUpdate.setIsActive(cinema.getIsActive());
-        }
-        return toDTO(cinemaRepository.save(cinemaToUpdate));
-    }
-
     private CinemaResponse toDTO(Cinema cinema) {
         return new CinemaResponse(cinema.getId(), cinema.getName(), cinema.getCity(), cinema.getIsActive());
     }
