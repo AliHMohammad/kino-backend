@@ -28,8 +28,6 @@ public class Auditorium {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-
-
     public Auditorium(String name, Cinema cinema) {
         this.name = name;
         this.cinema = cinema;

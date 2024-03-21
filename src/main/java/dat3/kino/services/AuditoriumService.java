@@ -8,20 +8,36 @@ import dat3.kino.exception.EntityNotFoundException;
 import dat3.kino.repositories.AuditoriumRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+/**
+ * Service class for managing auditoriums.
+ */
 @Service
 public class AuditoriumService {
     private final AuditoriumRepository auditoriumRepository;
     private final SeatService seatService;
     private final SeatPricingService seatPricingService;
 
+    /**
+     * Constructor for AuditoriumService.
+     *
+     * @param auditoriumRepository Repository for managing auditorium data.
+     * @param seatService Service for managing seat data.
+     * @param seatPricingService Service for managing seat pricing data.
+     */
     public AuditoriumService(AuditoriumRepository auditoriumRepository, SeatService seatService, SeatPricingService seatPricingService) {
         this.auditoriumRepository = auditoriumRepository;
         this.seatService = seatService;
         this.seatPricingService = seatPricingService;
     }
 
+    /**
+     * Creates a new auditorium with the specified number of rows and seats per row.
+     *
+     * @param newAuditorium The new auditorium to be created.
+     * @param rows The number of rows in the auditorium.
+     * @param seatsPerRow The number of seats per row in the auditorium.
+     * @return The created auditorium.
+     */
     public AuditoriumResponse createAuditorium(Auditorium newAuditorium, int rows, int seatsPerRow) {
         Auditorium auditorium = auditoriumRepository.save(newAuditorium);
         // Create seats
@@ -36,6 +52,13 @@ public class AuditoriumService {
         return toDTO(auditorium);
     }
 
+    /**
+     * Determines the seat pricing based on the row number.
+     *
+     * @param rows The total number of rows in the auditorium.
+     * @param rowNum The row number for which to determine the seat pricing.
+     * @return The seat pricing for the specified row.
+     */
     private SeatPricing getSeatPricing(int rows, int rowNum) {
 
         if (rowNum <= 2) {
@@ -47,11 +70,24 @@ public class AuditoriumService {
         }
     }
 
+    /**
+     * Retrieves a single auditorium by its ID.
+     *
+     * @param id The ID of the auditorium to retrieve.
+     * @return The retrieved auditorium.
+     * @throws EntityNotFoundException If no auditorium with the specified ID is found.
+     */
     public AuditoriumResponse readSingleAuditorium(Long id) {
         return auditoriumRepository.findById(id).map(this::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("auditorium", id));
     }
 
+    /**
+     * Converts an Auditorium entity to an AuditoriumResponse DTO.
+     *
+     * @param auditorium The auditorium to convert.
+     * @return The converted AuditoriumResponse DTO.
+     */
     private AuditoriumResponse toDTO(Auditorium auditorium) {
         return new AuditoriumResponse(
                 auditorium.getId(),

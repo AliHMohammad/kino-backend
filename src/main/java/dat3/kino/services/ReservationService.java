@@ -1,6 +1,5 @@
 package dat3.kino.services;
 
-
 import dat3.kino.dto.request.ReservationPriceRequest;
 import dat3.kino.dto.request.ReservationRequest;
 import dat3.kino.dto.response.ReservationPriceResponse;
@@ -22,6 +21,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing reservations.
+ */
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
@@ -33,6 +35,17 @@ public class ReservationService {
     private final ScreeningService screeningService;
     private final PriceAdjustmentService priceAdjustmentService;
 
+    /**
+     * Constructor for ReservationService.
+     *
+     * @param reservationRepository Repository for managing reservation data.
+     * @param screeningRepository Repository for managing screening data.
+     * @param userWithRolesRepository Repository for managing user data.
+     * @param seatRepository Repository for managing seat data.
+     * @param priceAdjustmentRepository Repository for managing price adjustment data.
+     * @param seatService Service for managing seat data.
+     * @param screeningService Service for managing screening data.
+     */
     public ReservationService(ReservationRepository reservationRepository, ScreeningRepository screeningRepository,
                               UserWithRolesRepository userWithRolesRepository, SeatRepository seatRepository,
                               PriceAdjustmentRepository priceAdjustmentRepository, SeatService seatService, ScreeningService screeningService, PriceAdjustmentService priceAdjustmentService) {
@@ -43,14 +56,20 @@ public class ReservationService {
         this.priceAdjustmentRepository = priceAdjustmentRepository;
         this.seatService = seatService;
         this.screeningService = screeningService;
-
         this.priceAdjustmentService = priceAdjustmentService;
     }
-
+  
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
+    /**
+     * Creates a new reservation.
+     *
+     * @param reservationRequest The request object containing the details of the reservation to be created.
+     * @param userId The ID of the user making the reservation.
+     * @return The created reservation.
+     */
     public ReservationResponse createReservation(ReservationRequest reservationRequest, String userId) {
         UserWithRoles user = userWithRolesRepository.findById(userId)
                 .orElseThrow();
@@ -69,10 +88,12 @@ public class ReservationService {
         return toDTO(reservation);
     }
 
-    public List<Reservation> getAllReservationsByScreeningId(Long id) {
-        return reservationRepository.findAllByScreeningId(id);
-    }
-
+    /**
+     * Retrieves all reservations made by a specific user.
+     *
+     * @param name The username of the user.
+     * @return A list of all reservations made by the specified user.
+     */
     public List<ReservationResponse> getAllReservationsByUserName(String name) {
         return reservationRepository.findAllByUserUsername(name)
                 .stream()
@@ -80,6 +101,12 @@ public class ReservationService {
                 .toList();
     }
 
+    /**
+     * Calculates the price of a reservation.
+     *
+     * @param reservationPriceRequest The request object containing the details of the reservation for which to calculate the price.
+     * @return The calculated price of the reservation.
+     */
     public ReservationPriceResponse calculateReservationPrice(ReservationPriceRequest reservationPriceRequest) {
         Screening screening = screeningRepository.findById(reservationPriceRequest.screeningId()).
                 orElseThrow(() -> new EntityNotFoundException("movie", reservationPriceRequest.screeningId()));
@@ -98,6 +125,7 @@ public class ReservationService {
         int NUM_OF_SEATS = reservationPriceRequest.seatIds()
                 .size();
 
+
         double FEES_SUM = priceAdjustmentService.calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments, NUM_OF_SEATS);
 
         double DISCOUNT_SUM = priceAdjustmentService.calculateDiscount(GROUP_SIZE, SEATS_SUM, priceAdjustments);
@@ -108,6 +136,7 @@ public class ReservationService {
         return toReservationPriceDto(SEATS_SUM, DISCOUNT_SUM, FEES_SUM, TOTAL);
     }
 
+
     private ReservationPriceResponse toReservationPriceDto(double seatsSum, double discount, double fees, double total) {
         return new ReservationPriceResponse(
                 seatsSum,
@@ -117,6 +146,15 @@ public class ReservationService {
         );
     }
 
+
+    /**
+     * Converts a ReservationRequest DTO to a Reservation entity.
+     *
+     * @param user The user making the reservation.
+     * @param screening The screening for which the reservation is made.
+     * @param seats The seats in the reservation.
+     * @return The converted Reservation entity.
+     */
     private Reservation toEntity(UserWithRoles user, Screening screening, Set<Seat> seats) {
         return new Reservation(
                 user,
@@ -125,6 +163,13 @@ public class ReservationService {
         );
     }
 
+
+    /**
+     * Converts a Reservation entity to a ReservationResponse DTO.
+     *
+     * @param reservation The reservation to convert.
+     * @return The converted ReservationResponse DTO.
+     */
     private ReservationResponse toDTO(Reservation reservation) {
         List<SeatResponse> seatResponseList = new ArrayList<>();
 
@@ -143,4 +188,3 @@ public class ReservationService {
         );
     }
 }
-

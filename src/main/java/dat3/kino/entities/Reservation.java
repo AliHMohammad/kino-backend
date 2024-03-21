@@ -39,7 +39,6 @@ public class Reservation {
     @ManyToMany
     private Set<Seat> seats = new HashSet<>();
 
-
     public Reservation(UserWithRoles user, Screening screening, Set<Seat> seats) {
         this.user = user;
         this.screening = screening;
