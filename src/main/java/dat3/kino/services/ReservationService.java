@@ -95,7 +95,10 @@ public class ReservationService {
                 .size() <= 5 ? "smallGroup" : reservationPriceRequest.seatIds()
                 .size() >= 10 ? "largeGroup" : "";
 
-        double FEES_SUM = priceAdjustmentService.calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments);
+        int NUM_OF_SEATS = reservationPriceRequest.seatIds()
+                .size();
+
+        double FEES_SUM = priceAdjustmentService.calculateFees(screening, GROUP_SIZE, SEATS_SUM, priceAdjustments, NUM_OF_SEATS);
 
         double DISCOUNT_SUM = priceAdjustmentService.calculateDiscount(GROUP_SIZE, SEATS_SUM, priceAdjustments);
 

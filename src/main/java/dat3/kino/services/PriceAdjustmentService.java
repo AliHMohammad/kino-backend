@@ -38,7 +38,7 @@ public class PriceAdjustmentService {
                         .getPrice(), Double::sum);
     }
 
-    public double calculateFees(Screening screening, String groupSize, double seatsSum, Map<String, Double> priceAdjustments) {
+    public double calculateFees(Screening screening, String groupSize, double seatsSum, Map<String, Double> priceAdjustments, int numOfSeats) {
 
         double FEE_3D = screening.getIs3d() ? priceAdjustments.get("fee3D") : 0;
 
@@ -49,8 +49,8 @@ public class PriceAdjustmentService {
         double feeSum = 0;
 
         if (groupSize.equals("smallGroup")) feeSum = priceAdjustments.get("smallGroup") * seatsSum - seatsSum;
-        if (FEE_3D > 0) feeSum += FEE_3D;
-        if (FEE_RUNTIME > 0) feeSum += FEE_RUNTIME;
+        if (FEE_3D > 0) feeSum += FEE_3D * numOfSeats;
+        if (FEE_RUNTIME > 0) feeSum += FEE_RUNTIME * numOfSeats;
 
         return feeSum;
     }
